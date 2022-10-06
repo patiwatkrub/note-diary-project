@@ -1,18 +1,38 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"log"
+	"time"
+
+	"githun.com/patiwatkrub/note-diary-project/modelDB"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
-func main() {
-	var iGreeting interface{} = "hi there!"
-	fmt.Println("Hello World!")
+type SqlLogger struct {
+	logger.Interface
+}
 
-	// type to check string with interface
-	if strGreet, ok := iGreeting.(string); ok {
-		fmt.Println(strGreet)
-	} else {
-		fmt.Println("something wrong!, iGreeting isn't string type")
+func (SqlLogger) Trace(ctx context.Context, begin time.Time, fc func() (sql string, rowsAffected int64), err error) {
+	sql, _ := fc()
+	fmt.Printf("%v\n==================================================", sql)
+}
+
+func main() {
+	dsn := "postgres://postgres:p@ssword@pgsql@localhost:5432/postgres?TimeZone=Asia/Bangkok"
+	dial := postgres.Open(dsn)
+
+	db, err := gorm.Open(dial, &gorm.Config{
+		Logger: &SqlLogger{},
+		DryRun: true,
+	})
+
+	if err != nil {
+		log.Panic("ERROR! to connect database.")
 	}
 
+	db.AutoMigrate(&modelDB.NoteDiary{})
 }
