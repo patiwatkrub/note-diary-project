@@ -33,6 +33,8 @@ func main() {
 	if err != nil {
 		log.Panic("ERROR! to connect database.")
 	}
+	db.AutoMigrate(&modelDB.User{})
 
-	db.AutoMigrate(&modelDB.NoteDiary{})
+	userAccessDB := modelDB.NewUserAccessingDB(db)
+	userAccessDB.Create("asdasdasd", "dasdla,fld", "sadg@gmail.com")
 }

@@ -1,0 +1,39 @@
+package modelDB
+
+import "gorm.io/gorm"
+
+type userAccessDB struct {
+	db *gorm.DB
+}
+
+func NewUserAccessingDB(db *gorm.DB) userAccessDB {
+	return userAccessDB{db: db}
+}
+
+func (user userAccessDB) Create(username, encyptpassword, email string) (User, error) {
+	aUser := User{
+		Username:       username,
+		EncyptPassword: encyptpassword,
+		Email:          email,
+	}
+
+	result := user.db.First(&aUser)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	result = user.db.Create(&aUser)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return nil, nil
+}
+
+func (user userAccessDB) Activate() (*User, error) {
+	return nil, nil
+}
+
+func (user userAcessDB) UpdatePassword(newPassword string) (*User, error) {
+	return nil, nil
+}
