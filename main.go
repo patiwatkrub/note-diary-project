@@ -18,7 +18,7 @@ type SqlLogger struct {
 
 func (SqlLogger) Trace(ctx context.Context, begin time.Time, fc func() (sql string, rowsAffected int64), err error) {
 	sql, _ := fc()
-	fmt.Printf("%v\n==================================================", sql)
+	fmt.Printf("%v\n==================================================\n", sql)
 }
 
 func main() {
@@ -36,5 +36,9 @@ func main() {
 	db.AutoMigrate(&modelDB.User{})
 
 	userAccessDB := modelDB.NewUserAccessingDB(db)
-	userAccessDB.Create("asdasdasd", "dasdla,fld", "sadg@gmail.com")
+
+	_ = userAccessDB
+	// userAccessDB.Create("UserA", "123456789", "user_A@gmail.com")
+	// userAccessDB.Create("UserA", "123456789", "user_A@gmail.com")
+
 }
