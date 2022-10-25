@@ -9,7 +9,7 @@ type User struct {
 	// Image Profile
 	Username     string `gorm:"column:username;varchar(12);unique;not null"`
 	Password     string `gorm:"coulumn:ecypt_password;not null"`
-	Email        string `gorm:"email;not null"`
+	Email        string `gorm:"email;unique;not null"`
 	Confirmation bool   `gorm:"confirmation;boolean;default:false;not null"`
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
@@ -17,6 +17,8 @@ type User struct {
 
 type UserInterface interface {
 	Create(string, string, string) (User, error)
-	Activate(int) (*User, error)
-	UpdatePassword(string) (*User, error)
+	Verify(int) (User, error)
+	ResetPassword(string, string) (User, error)
+	ChangeEmail(string, string) (User, error)
+	Delete(int) error
 }
