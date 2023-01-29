@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/patiwatkrub/note-diary-project/modelDB"
+	"github.com/patiwatkrub/note-diary-project/dbAdapter"
 	"github.com/patiwatkrub/note-diary-project/utility"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -30,7 +30,7 @@ func initDatabase() *gorm.DB {
 		os.Getenv("POSTGRES_PASSWORD"),
 		"localhost",
 		os.Getenv("POSTGRES_PORT"),
-		"postgres")
+		"notediary")
 
 	dial := postgres.Open(dsn)
 
@@ -43,7 +43,7 @@ func initDatabase() *gorm.DB {
 	if err != nil {
 		log.Panic("ERROR! to connect database.")
 	}
-	db.AutoMigrate(&modelDB.User{})
+	db.AutoMigrate(&dbAdapter.User{})
 
 	return db
 }
