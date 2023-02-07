@@ -6,15 +6,28 @@
     <title>E-mail Verification</title>
     <link rel="stylesheet" href="./assets/dist/output.css">
 </head>
-<body class="box">
-    <div class='bg-blue-colored'>
-        <h1 class="bg-gray-700 text-2xl text-zinc-200" >E-mail Verification</h1>
-        <br>
-        <h3>Hello sir <i>{{ .Name }}</i></h3> 
-        <div>
-        Please, verification your account follow into <a href="https://www.google.co.th">Link</a>
+<body>
+    
+    <div class="mx-36 mt-20 p-20">
+        <div class="mx-36 w-auto h-72 p-2 border-8 border-t-red-400 border-l-cyan-300 border-r-green-500 border-b-gray-300 rounded-md bg-gray-200">
+            <h1 class="p-2 font-normal text-2xl text-white bg-gray-700 rounded">E-mail Verification</h1>
+            <div class="p-2 font-thin text-lg rounded">
+                <h3>Hello, <i>{{ .Name }}</i></h3> 
+                <p>Please, verification your account follow on <a href="https://www.google.co.th" class="text-red-700 visited:text-green-600">Link</a></p>
+            </div>
         </div>
+        <footer class="mx-36 p-2 bg-gray-600 font-extralight text-sm text-center text-stone-50 border-2 border-white rounded">
+            <div>
+                <p class="uppercase"><i>Copyright&copy;</i></p>
+                <br>    
+                <div>
+                    Email &#9993;: Patiwatkrubst@hotmail.com<br>
+                    Github <img class="w-5 h-5 inline-flex" src="../public/github.png">: github.com/Patiwatkrub/note-diary-project<br>
+                    Tel &#9743;: 098-2838-104
+                </div>
+            </div>
+            
+        </footer>
     </div>
-
 </body>
 </html>

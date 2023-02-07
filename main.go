@@ -34,7 +34,7 @@ func main() {
 		userC.Email, */
 	}
 
-	o, e := os.ReadFile("template/mail-verification.html")
+	o, e := os.ReadFile("template/mail-verification-output.html")
 	if e != nil {
 		panic(e)
 	}
