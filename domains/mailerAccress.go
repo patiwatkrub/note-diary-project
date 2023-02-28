@@ -16,8 +16,8 @@ func NewMailValidateAccess(mailer *gomail.Dialer) mailerAccess {
 		message: massage}
 }
 
-func (mail *mailerAccess) SetAddress(to []string) {
-	mail.message.SetHeader("To", to...)
+func (mail *mailerAccess) SetAddress(to string) {
+	mail.message.SetHeader("To", to)
 }
 
 func (mail *mailerAccess) SetContext(from, subject, context string) {

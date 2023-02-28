@@ -8,7 +8,7 @@ type EmailValidate struct {
 }
 
 type EmailValidateInterface interface {
-	SetAddress([]string)
+	SetAddress(string)
 	SetContext(string, string, string)
 	SendMail() error
 }

@@ -4,6 +4,6 @@
   },
   "scripts": {
     "tailwindcss-build": "npx tailwindcss -i ./template/assets/src/input.css -o ./template/assets/dist/output.css --watch",
-    "mailwind-build": "mailwind --input-html ./template/mail-verification.html --output-css ./template/assets/dist/mail-verification-style.css --output-html ./template/mail-verification-output.html"
+    "mailwind-build": "mailwind --input-html ./template/mail-verification.html --output-html ./template/mail-verification-output.html"
   }
 }

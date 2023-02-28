@@ -1,33 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-mail Verification</title>
-    <link rel="stylesheet" href="./assets/dist/output.css">
 </head>
 <body>
-    
-    <div class="mx-36 mt-20 p-20">
-        <div class="mx-36 w-auto h-72 p-2 border-8 border-t-red-400 border-l-cyan-300 border-r-green-500 border-b-gray-300 rounded-md bg-gray-200">
-            <h1 class="p-2 font-normal text-2xl text-white bg-gray-700 rounded">E-mail Verification</h1>
-            <div class="p-2 font-thin text-lg rounded">
-                <h3>Hello, <i>{{ .Name }}</i></h3> 
-                <p>Please, verification your account follow on <a href="https://www.google.co.th" class="text-red-700 visited:text-green-600">Link</a></p>
+    <div style="margin: 10%;">
+        <div style="font-family: Franklin Gothic Medium,Franklin Gothic,ITC Franklin Gothic,Arial,sans-serif; font-size: larger; font-weight: 400; margin: auto; padding: 20px; background-color: rgb(248, 247, 247); border-style: solid; border-width: 10px; border-left-color: rgb(107, 255, 251); border-top-color: rgb(244, 111, 95); border-right-color: rgb(49, 193, 20 ); border-bottom-color: gainsboro;">
+            <div style="background-color: rgb(60, 189, 0); background: linear-gradient(90deg, rgba(69,255,0,1) 5%, rgba(73,173,58,0.9893207282913166) 50%, rgba(69,255,0,1) 100%); color: white; margin: auto; width: auto; padding: 12px;">E-mail Verification</div>
+            <div style="font-size: medium; background-color: rgb(253, 255, 249 ); margin-top: -5px; padding: 10px 25px">
+                <h3>Dear, <i>{{ .Name }}</i></h3>
+                <p>Thank you for trusting in our service. about making note daily lists application</p>
+                <p>Please, verification your account follow on <a href="https://www.google.co.th" class="">Link</a></p>
             </div>
         </div>
-        <footer class="mx-36 p-2 bg-gray-600 font-extralight text-sm text-center text-stone-50 border-2 border-white rounded">
+        <div style="background-color: rgb(59, 60, 58); padding: 20px; text-align: center; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-size: 80%; font-weight: 200; color: whitesmoke;">
             <div>
-                <p class="uppercase"><i>Copyright&copy;</i></p>
-                <br>    
-                <div>
-                    Email &#9993;: Patiwatkrubst@hotmail.com<br>
-                    Github <img class="w-5 h-5 inline-flex" src="../public/github.png">: github.com/Patiwatkrub/note-diary-project<br>
-                    Tel &#9743;: 098-2838-104
-                </div>
+                <span class="uppercase"><i>Copyright&copy;</i></span><br>
+                <span>
+                    Email &#9993;: <a style="color: white; text-decoration: none;" href="mailto:Patiwatkrubst@hotmail.com">Patiwatkrubst@hotmail.com</a>
+                </span><br>
+                <span>Github</span> 
+                <span>
+                    <img style="display: inline-flex; width: 20px; height: 20px;" src="https://cdn-icons-png.flaticon.com/24/2111/2111374.png"></span>
+                <span> 
+                    : <a style="color: white; text-decoration: none;" href="https://github.com/patiwatkrub/note-diary-project" target="_blank">github.com/patiwatkrub/note-diary-project</a> 
+                </span><br>
+                <span>
+                    Tel &#9743;: <a style="color: white; text-decoration: none;" href="tel:098-2838-104">098-2838-104</a>
+                </span> 
             </div>
-            
-        </footer>
+        </div>
     </div>
 </body>
-</html>
+</html> 

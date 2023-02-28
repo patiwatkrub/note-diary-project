@@ -1,9 +1,10 @@
 package main
 
 import (
-	"os"
+	"fmt"
 
 	"github.com/patiwatkrub/note-diary-project/domains"
+	"github.com/patiwatkrub/note-diary-project/services"
 )
 
 func main() {
@@ -12,13 +13,13 @@ func main() {
 
 	userAccessDB := domains.NewUserAccessingDB(db)
 	mailAdapter := domains.NewMailValidateAccess(mailer)
-	_ = userAccessDB
-	_ = mailAdapter
+	userAccessService := services.NewUserAccessingService(&userAccessDB, &mailAdapter)
 
-	userA, err := userAccessDB.Create("UserA", "123456789", "patiwatkrubst@hotmail.com")
-	if err != nil {
-		panic(err)
-	}
+	// userA, err := userAccessDB.Create("UserA", "123456789", "patiwatkrubst@hotmail.com")
+	// if err != nil {
+	// 	panic(err)
+	// }
+
 	/* userB, err := userAccessDB.Create("UserB", "987654321", "patiwatkrubnd@hotmail.com")
 	if err != nil {
 		panic(err)
@@ -28,25 +29,7 @@ func main() {
 		panic(err)
 	} */
 
-	terminal := []string{
-		userA.Email,
-		/* userB.Email,
-		userC.Email, */
-	}
-
-	o, e := os.ReadFile("template/mail-verification-output.html")
-	if e != nil {
-		panic(e)
-	}
-
-	mailAdapter.SetAddress(terminal)
-	mailAdapter.SetContext("patiwatkongram@gmail.com", "Note-diary verification email", string(o))
-
-	// Read file for chosen a page to sending verify mail
-	if err = mailAdapter.SendMail(); err != nil {
-		panic(err)
-	}
-
+	// DB domains
 	/* users, err := userAccessDB.GetUsers()
 	if err != nil {
 		fmt.Errorf("error: %v\n", err)
@@ -93,4 +76,35 @@ func main() {
 		fmt.Errorf("error: %v\n", err)
 	}
 	fmt.Printf("%+v", users) */
+
+	// Services
+	err := userAccessService.CreateUser("UserA", "123456789", "patiwatkrubst@hotmail.com")
+	if err != nil {
+		panic(err)
+	}
+
+	/*err = userAccessService.CreateUser("UserB", "987654321", "patiwatkongram@gmail.com")
+	if err != nil {
+		panic(err)
+	}
+
+	err = userAccessService.CreateUser("UserC", "123456", "patiwatkrubst_pgo@outlook.com")
+	if err != nil {
+		panic(err)
+	} */
+
+	users, err := userAccessService.GetUsers()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Users: %+v\n", users)
+
+	user, err := userAccessService.GetUser(1)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("User: %+v\n", user)
+
 }

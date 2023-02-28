@@ -24,6 +24,7 @@ func (SqlLogger) Trace(ctx context.Context, begin time.Time, fc func() (sql stri
 }
 
 func initDatabase() *gorm.DB {
+	log.Println("Connecting... database")
 	dsn := fmt.Sprintf("%v://%v:%v@%v:%v/%v?TimeZone=Asia/Bangkok",
 		os.Getenv("POSTGRES_DRIVER"),
 		os.Getenv("POSTGRES_USERNAME"),
@@ -46,5 +47,6 @@ func initDatabase() *gorm.DB {
 	}
 	db.AutoMigrate(&domains.User{})
 
+	log.Println("Success...")
 	return db
 }
