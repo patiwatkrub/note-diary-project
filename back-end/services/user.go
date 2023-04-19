@@ -9,8 +9,8 @@ type UserResponse struct {
 
 type UserService interface {
 	CreateUserAccount(string, string, string) error
-	GetUser() ([]UserResponse, error)
-	GetUsers(int) (UserResponse, error)
+	GetUser(int) (UserResponse, error)
+	GetUsers() ([]UserResponse, error)
 	Verify(int) (UserResponse, error)
 	ChangePassword(int, string) (UserResponse, error)
 	ChangeEmail(string, string) (UserResponse, error)

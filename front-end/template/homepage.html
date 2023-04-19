@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./assets/dist/output.css" rel="stylesheet">
+    <title>HOMEPAGE</title>
+</head>
+<body>
+    <header class="flex flex-row w-auto h-18 bg-gainsboro rounded-lg">
+        <span class="m-2 flex-1 inline-flex">
+            <img src="../public/logo-icon-32px.png" alt="Note Diary Project">
+            <span class="text-center mt-2 left-16 font-serif font-medium">
+                <span> Note Diary Project</span> 
+                <a class="transition ease-out delay-700 inline-flex rounded-lg hover:animate-bounce hover:bg-yellow-200 hover:-translate-y-1 hover:scale-100 duration-100" href="#how-2-use"><img class="w-5 text-center align-text-bottom rounded-md max-md:hidden" src="https://cdn-icons-png.flaticon.com/64/6671/6671387.png" alt=""></a>
+            </span>
+        </span>
+        <!-- Register section on Windows -->
+        <span class="m-1 max-md:hidden">
+            <button class="rounded-lg hover:bg-medium-aquamarine open-modal-button">
+                SIGN IN
+            </button>
+            <button class="rounded-lg hover:bg-medium-aquamarine">
+                LOG IN
+            </button>
+        </span>
+        <!-- 
+            User detail section on Windows
+            default: hidden
+            active(log in): block
+        -->
+        <span class="hidden m-1 max-md:hidden">
+            <span class="grid grid-rows-2 grid-cols-2 m-1">
+                <img class="row-span-2 col-span-1 place-self-end mr-2 box-content rounded-full w-10 h-10" src="../public/profile-photo.png" alt="">
+                <span class="place-self-auto text-sm">
+                    {{ .Username }}
+                </span>
+                <span class="col-span-1 place-self-end px-1 pb-1 text-xs text-gray-400 ">
+                    <a href="#">
+                        LOG OUT
+                    </a>
+                </span>
+            </span>
+        </span>
+        <span id="dropdown-box" class="hidden max-md:inline-block">
+            <button id="dropdown-button" class="bg-gray-700 text-medium-aquamarine peer" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="m-2 w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+            </button>
+            <div id="dropdown-content" class="hidden absolute right-2 w-[100px] z-10 text-center text-xs first:pt-2 last:pb-2">
+                <ui>
+                    {{ if .User }}
+                        <li class="h-full w-full p-2 bg-gainsboro rounded-sm">
+                            {{ .Username }}<br>
+                            {{ .Email }}
+                        </li>
+                        <li class="h-full w-full p-2 bg-gainsboro rounded-sm">
+                            <a href="#">LOG OUT</a>
+                        </li>
+                    {{ else }}
+                        <li class="h-full w-full p-2 bg-gainsboro rounded-sm">
+                            <a href="#">SIGN IN</a>
+                        </li>
+                        <li class="h-full w-full p-2 bg-gainsboro rounded-sm">
+                            <a href="#">LOG IN</a>
+                        </li>
+                    {{ end }}
+                </ui>
+            </div>
+        </span>
+    </header>
+    <div class="bg-theme p-10 relative">
+        <div class="container m-auto grid grid-flow-row grid-cols-2 max-md:grid-cols-1">
+            <div class="col-span-1 max-md:order-last relative">
+                <p class="top-6 left-16 max-md:left-8 font-serif font-extrabold text-xl text-melon absolute">
+                    <b>Note Diary :</b> 
+                </p>
+                <div class="mx-8 max-md:mx-auto mt-10 p-5 text-justify bg-middle-yellow-red rounded-lg border-r-8 border-b-8 border-r-myrtle-green border-b-myrtle-green static">
+                    <form class="relative m-2 w-full" action="" method="post">
+                        <div class="flex mx-5 my-1">
+                            <label class="my-1 w-[80px] text-center" for="diary-topic"><b>Topic :</b></label>
+                            <input class="ml-2 w-full h-[30px]" type="text" name="diary-topic" id="">
+                        </div>
+                        <div class="mx-5 my-1 w-auto">
+                            <label class="px-3 my-1 w-[80px] text-center" for="diary-type"><b>Type :</b></label><br>
+                            <div class="px-10">
+                                <input type="radio" name="diary-type" id="diary-note" value="diaryNote">
+                                <label for="diary-note">Diary note</label><br>
+                            </div>
+                            <div class="px-10">
+                                <input type="radio" name="diary-type" id="todo-list" value="todoList">
+                                <label for="todo-list">Todo List</label>
+                            </div>
+                        </div>
+                        <div class="w-auto mx-5 my-1">
+                            <label class="my-1 w-[80px] text-center block" for="diary-detail"><b>Detail :</b></label>
+                            <textarea class="p-5 resize w-[100%]" name="diary-detail" id="" cols="" rows="10"></textarea>
+                        </div>
+                        <div class="mr-3 flex flex-row-reverse">
+                            <button class="w-auto px-4 py-1 bg-medium-aquamarine text-center rounded-md" type="submit">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row-span-5 col-span-1 max-md:order-2 relative">
+                <div class="mx-auto m-10 p-5 bg-middle-yellow-red text-center rounded-lg border-r-8 border-b-8 border-r-myrtle-green border-b-myrtle-green">
+                    <p class="top-6 left-8 font-serif font-extrabold text-xl text-melon absolute">
+                        <b>List :</b>
+                    </p>
+                    <img  class="w-full rounded-full opacity-25 static" src="https://images.unsplash.com/photo-1568844590215-b7d899a731b4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80" alt="">
+                    
+                </div>
+            </div>
+            <div id="how-2-use" class="col-span-1 max-md:order-1 mx-auto p-12 max-md:p-6 text-base text-white">
+                <p class="p-4 text-center text-lg"><b>Note Diary PROJECT</b></p>
+                <hr>
+                <p class="p-3 text-justify text-base">เว็บแอพพลิเคชั่นที่พัฒนาสำหรับใช้บันทึกกิจกรรมประจำวัน กิจวัต หรือกิจกรรมที่จะต้องทำให้เสร็จ <span>
+                    <a id="link-expand-description" class="text-blue-400" href="#link-expand-description">...อ่านต่อ</a>
+                    <span id="expand-description" class="hidden">
+                        ซึ่งมีการพัฒนาขึ้นโดยการใช้ภาษา Golang ในส่วนของหลังบ้านโดยมีการออกแบบตาม Clean code architecture (Hexagonal Architecture | Port and Adapter)
+                        และในส่วนของหน้าบ้านได้ HTML, CSS (TailwindCSS) พร้อมทั้งการทำเทสต่าง ๆ ได้แก่ Unit test, Integration test เป็นต้น ตาม libraries ของ Golang
+                        สุดท้ายด้วยการทดลองทำ Deploy and setting environment ให้เหมาะสมต่อการใช้งานเปิดและปิดเซิร์ฟเวอร์ของเว็บแอพพลิเคชั่น 
+                    </span>
+                    <a id="link-minimize-description"class="text-blue-400 hidden" href="#link-minimize-description">ย่อ</a>
+                </span></p>
+            </div>
+        </div>
+        
+    </div>
+    <div class="absolute top-64 left-1/4 z-10 w-8/12 h-auto bg-gainsboro rounded-lg border-r-8 border-b-8 border-r-myrtle-green border-b-myrtle-green">
+        <form action="" method="post" class="mt-14 mx-auto px-20 flex-row justify-center ">
+            <div>
+                <label for="">Username: </label>
+                <input class="" type="text" name="" id="" required>
+            </div>
+            <div>
+                <label for="">Password: </label>
+                <input type="password" name="" id="" required>
+            </div>
+            <div>
+                <label for="">Email: </label>
+                <input rype="email" name="" id="" required>
+            </div>
+        </form>
+    </div>
+    
+    <footer class="w-auto h-[150px] pt-4 bg-gradient-to-tl from-medium-aquamarine to-myrtle-green text-center">
+        <span class="uppercase"><i>Copyright&copy;</i></span><br>
+                <span>
+                    Email &#9993;: <a style="color: white; text-decoration: none;" href="mailto:Patiwatkrubst@hotmail.com">Patiwatkrubst@hotmail.com</a>
+                </span><br>
+                <span>Github</span> 
+                <span>
+                    <img style="display: inline-flex; width: 20px; height: 20px;" src="https://cdn-icons-png.flaticon.com/24/2111/2111374.png"></span>
+                <span> 
+                    : <a style="color: white; text-decoration: none;" href="https://github.com/patiwatkrub/note-diary-project" target="_blank">github.com/patiwatkrub/note-diary-project</a> 
+                </span><br>
+                <span>
+                    Tel &#9743;: <a style="color: white; text-decoration: none;" href="tel:098-2838-104">098-2838-104</a>
+                </span> 
+    </footer>
+    <script src="./homepage.js"></script>
+</body>
+</html>

@@ -7,8 +7,8 @@ import (
 	"os"
 	"regexp"
 
-	"github.com/patiwatkrub/note-diary-project/domains"
-	"github.com/patiwatkrub/note-diary-project/utility"
+	"github.com/patiwatkrub/note-diary-project/back-end/domains"
+	"github.com/patiwatkrub/note-diary-project/back-end/utility"
 )
 
 type userAccessService struct {
@@ -20,7 +20,7 @@ func NewUserAccessingService(userDBI domains.UserInterface, mailer domains.Email
 	return userAccessService{userDBI: userDBI, mailer: mailer}
 }
 
-func (user *userAccessService) CreateUser(username, password, email string) (err error) {
+func (user userAccessService) CreateUserAccount(username, password, email string) (err error) {
 	// เช็คความถูกต้องของชื่อผู้ใช้งาน
 	matched, err := regexp.MatchString(`[(^\w)]`, username)
 	if err != nil {
@@ -93,7 +93,7 @@ func (user *userAccessService) CreateUser(username, password, email string) (err
 	return nil
 }
 
-func (user *userAccessService) GetUser(userID int) (aUser UserResponse, err error) {
+func (user userAccessService) GetUser(userID int) (aUser UserResponse, err error) {
 	getUser, err := user.userDBI.GetUserById(userID)
 	if err != nil {
 		log.Printf("gotten an error: %v", err)
@@ -108,7 +108,7 @@ func (user *userAccessService) GetUser(userID int) (aUser UserResponse, err erro
 	return aUser, nil
 }
 
-func (user *userAccessService) GetUsers() (users []UserResponse, err error) {
+func (user userAccessService) GetUsers() (users []UserResponse, err error) {
 
 	getUser, err := user.userDBI.GetUsers()
 	if err != nil {
@@ -127,7 +127,7 @@ func (user *userAccessService) GetUsers() (users []UserResponse, err error) {
 	return users, nil
 }
 
-func (user *userAccessService) Verify(userID int) (aUser UserResponse, err error) {
+func (user userAccessService) Verify(userID int) (aUser UserResponse, err error) {
 	getUser, err := user.userDBI.Verify(userID)
 	if err != nil {
 		log.Printf("gooten an error: %v", err)
@@ -141,7 +141,7 @@ func (user *userAccessService) Verify(userID int) (aUser UserResponse, err error
 	return aUser, nil
 }
 
-func (user *userAccessService) ChangePassword(userID int, newPassword string) (aUser UserResponse, err error) {
+func (user userAccessService) ChangePassword(userID int, newPassword string) (aUser UserResponse, err error) {
 	encryptePassword, err := utility.EncyptPassword(newPassword)
 	if err != nil {
 		log.Printf("gotten an error: %v", err)
@@ -161,7 +161,7 @@ func (user *userAccessService) ChangePassword(userID int, newPassword string) (a
 	return aUser, nil
 }
 
-func (user *userAccessService) ChangeEmail(username string, newEmail string) (aUser UserResponse, err error) {
+func (user userAccessService) ChangeEmail(username string, newEmail string) (aUser UserResponse, err error) {
 	matched, err := regexp.MatchString(`(\w+)(@)(mail|gmail|hotmail|thaimail|outlook|aol|yahoo)(\.)(com|net)`, newEmail)
 	if err != nil {
 		log.Printf("gotten an error: %v", err)
@@ -188,6 +188,6 @@ func (user *userAccessService) ChangeEmail(username string, newEmail string) (aU
 	return aUser, nil
 }
 
-func (user *userAccessService) DeleteUser(userID int) (err error) {
+func (user userAccessService) DeleteUser(userID int) (err error) {
 	return user.userDBI.Delete(userID)
 }

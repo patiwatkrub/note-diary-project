@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    button{
+        @apply m-2 p-1 bg-white shadow-md shadow-black
+    }
+}
+
+@layer components {
+    .bg-theme {
+        @apply w-auto h-auto bg-gradient-to-b from-bitter-chocolate to-milktea
+    }
+}

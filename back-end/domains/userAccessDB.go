@@ -15,7 +15,7 @@ func NewUserAccessingDB(db *gorm.DB) userAccessDB {
 	return userAccessDB{db: db}
 }
 
-func (user *userAccessDB) Create(username, password, email string) (aUser User, err error) {
+func (user userAccessDB) Create(username, password, email string) (aUser User, err error) {
 	//initial value User
 	aUser.Username = username
 	aUser.Password = password
@@ -40,7 +40,7 @@ func (user *userAccessDB) Create(username, password, email string) (aUser User, 
 	return aUser, nil
 }
 
-func (user *userAccessDB) GetUserById(userID int) (aUser User, err error) {
+func (user userAccessDB) GetUserById(userID int) (aUser User, err error) {
 	fmt.Println("GETUSER")
 	queryStm := "SELECT user_id, username, password, email, confirmation, created_at, updated_at FROM users WHERE user_id = ?"
 
@@ -54,7 +54,7 @@ func (user *userAccessDB) GetUserById(userID int) (aUser User, err error) {
 	return aUser, nil
 }
 
-func (user *userAccessDB) GetUsers() (users []User, err error) {
+func (user userAccessDB) GetUsers() (users []User, err error) {
 	fmt.Println("GETUSERS")
 	queryStm := "SELECT user_id, username, password, email, confirmation, created_at, updated_at FROM users"
 
@@ -69,7 +69,7 @@ func (user *userAccessDB) GetUsers() (users []User, err error) {
 	return users, nil
 }
 
-func (user *userAccessDB) Verify(userID int) (aUser User, err error) {
+func (user userAccessDB) Verify(userID int) (aUser User, err error) {
 	fmt.Println("VERIFY")
 	//Prepare transection statement
 	tx := user.db.Begin()
@@ -99,7 +99,7 @@ func (user *userAccessDB) Verify(userID int) (aUser User, err error) {
 	return aUser, nil
 }
 
-func (user *userAccessDB) ChangePassword(userId int, newPassword string) (aUser User, err error) {
+func (user userAccessDB) ChangePassword(userId int, newPassword string) (aUser User, err error) {
 	fmt.Println("CHANGEPASSWORD")
 	tx := user.db.Begin()
 
@@ -124,7 +124,7 @@ func (user *userAccessDB) ChangePassword(userId int, newPassword string) (aUser 
 	return aUser, nil
 }
 
-func (user *userAccessDB) ChangeEmail(oldEmail, newEmail string) (aUser User, err error) {
+func (user userAccessDB) ChangeEmail(oldEmail, newEmail string) (aUser User, err error) {
 	fmt.Println("CHANGEMAIL")
 	tx := user.db.Begin()
 
@@ -149,7 +149,7 @@ func (user *userAccessDB) ChangeEmail(oldEmail, newEmail string) (aUser User, er
 	return aUser, nil
 }
 
-func (user *userAccessDB) Delete(userID int) error {
+func (user userAccessDB) Delete(userID int) error {
 	fmt.Println("DELETE")
 	tx := user.db.Begin()
 

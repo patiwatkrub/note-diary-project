@@ -7,8 +7,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/patiwatkrub/note-diary-project/domains"
-	"github.com/patiwatkrub/note-diary-project/utility"
+	"github.com/patiwatkrub/note-diary-project/back-end/domains"
+	"github.com/patiwatkrub/note-diary-project/back-end/utility"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

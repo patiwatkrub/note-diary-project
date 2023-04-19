@@ -1,10 +1,12 @@
 package main
 
 import (
-	"fmt"
+	"net/http"
 
-	"github.com/patiwatkrub/note-diary-project/domains"
-	"github.com/patiwatkrub/note-diary-project/services"
+	"github.com/gin-gonic/gin"
+	"github.com/patiwatkrub/note-diary-project/back-end/controllers"
+	"github.com/patiwatkrub/note-diary-project/back-end/domains"
+	"github.com/patiwatkrub/note-diary-project/back-end/services"
 )
 
 func main() {
@@ -13,7 +15,24 @@ func main() {
 
 	userAccessDB := domains.NewUserAccessingDB(db)
 	mailAdapter := domains.NewMailValidateAccess(mailer)
-	userAccessService := services.NewUserAccessingService(&userAccessDB, &mailAdapter)
+	userAccessService := services.NewUserAccessingService(userAccessDB, mailAdapter)
+	userAccessController := controllers.NewUserAccessingController(userAccessService)
+
+	router := gin.Default()
+
+	router.Static("/public", "./public")
+	router.StaticFile("/homepage.js", "./template/homepage.js")
+	router.StaticFile("/assets/dist/output.css", "./template/assets/dist/output.css")
+	router.LoadHTMLGlob("./template/*.html")
+
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "homepage.html", nil)
+	})
+
+	userPath := router.Group("/user")
+	userPath.GET("/create", userAccessController.CreateUserAccount)
+
+	http.ListenAndServe(":8080", router)
 
 	// userA, err := userAccessDB.Create("UserA", "123456789", "patiwatkrubst@hotmail.com")
 	// if err != nil {
@@ -78,12 +97,12 @@ func main() {
 	fmt.Printf("%+v", users) */
 
 	// Services
-	err := userAccessService.CreateUser("UserA", "123456789", "patiwatkrubst@hotmail.com")
+	/*err := userAccessService.CreateUser("UserA", "123456789", "patiwatkrubst@hotmail.com")
 	if err != nil {
 		panic(err)
 	}
 
-	/*err = userAccessService.CreateUser("UserB", "987654321", "patiwatkongram@gmail.com")
+	err = userAccessService.CreateUser("UserB", "987654321", "patiwatkongram@gmail.com")
 	if err != nil {
 		panic(err)
 	}
@@ -91,7 +110,7 @@ func main() {
 	err = userAccessService.CreateUser("UserC", "123456", "patiwatkrubst_pgo@outlook.com")
 	if err != nil {
 		panic(err)
-	} */
+	}
 
 	users, err := userAccessService.GetUsers()
 	if err != nil {
@@ -105,6 +124,6 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Printf("User: %+v\n", user)
+	fmt.Printf("User: %+v\n", user)*/
 
 }
