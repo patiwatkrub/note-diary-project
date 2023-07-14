@@ -1,10 +1,10 @@
 package utility
 
 import (
+	"fmt"
 	"time"
 )
 
-const timeSettingFormat string = "Mon, 02 Jan 2020 15:04:05 UTC"
 const ianaDBTimezone string = "Asia/Bangkok"
 
 func init() {
@@ -17,9 +17,22 @@ func init() {
 }
 
 func GetTime() time.Time {
-	t, err := time.Parse(time.RFC1123, timeSettingFormat)
+	date := time.Now().Local()
+
+	shortDay := date.Weekday().String()[0:3]
+
+	shortMonth := date.Month().String()[0:3]
+
+	t, err := time.Parse(time.RFC1123, fmt.Sprintf("%v, %02d %v %v %02d:%02d:%02d GMT",
+		shortDay, date.Day(), shortMonth, date.Year(),
+		date.Hour(), date.Minute(), date.Second()))
 	if err != nil {
 		panic(err)
 	}
 	return t
+}
+
+func GenerateExpireTime() int64 {
+	issueTime := GetTime().Add(time.Minute * 120).Unix()
+	return issueTime
 }

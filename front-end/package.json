@@ -1,9 +1,12 @@
 {
+  "type": "module",
   "devDependencies": {
-    "tailwindcss": "^3.2.4"
+    "tailwindcss": "^3.3.2"
   },
   "scripts": {
-    "tailwindcss-build": "npx tailwindcss -i ./template/assets/src/input.css -o ./template/assets/dist/output.css --watch",
-    "mailwind-build": "mailwind --input-html ./template/mail-verification.html --output-html ./template/mail-verification-output.html"
+    "tailwindcss-build": "npx tailwindcss -i ./src/assets/input.css -o ./src/assets/output.css --watch"
+  },
+  "dependencies": {
+    "crypto-js": "^4.1.1"
   }
 }

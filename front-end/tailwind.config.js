@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./template/*.{html,js}"],
+  content: ["./public/*.html", "./src/app.js", "./src/**/*.js", "./src/components/**/*.js"],
   theme: {
     extend: {
       colors: {
@@ -13,6 +13,12 @@ module.exports = {
         'middle-yellow-red': '#F2B46D',
         'milktea': '#F2B46D',
         'myrtle-green': '#25646D',
+        'cosmic-latte': '#FFF7E7', 
+      },
+      listStyleImage: {
+        checkmark: 'url("/src/assets/icons/checkmark.png")',
+        checkmark_gif: 'url("/src/assets/icons/checkmark-resize.gif")',
+        uncheckmark_gif : 'url("/src/assets/icons/uncheckmark.png")',
       },
     },
   },

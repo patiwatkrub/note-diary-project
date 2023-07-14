@@ -1,0 +1,460 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    button{
+        @apply 
+        m-2 p-1 
+        bg-white 
+        shadow-md shadow-black;
+    }
+}
+
+@layer components {
+    /* homepage section */
+    .bg-theme {
+        @apply
+        w-auto
+        h-screen
+        lg:h-auto
+        max-lg:min-h-full
+        bg-gradient-to-b 
+        from-bitter-chocolate 
+        to-milktea 
+        max-sm:h-full;
+    }
+
+    .flex-center-on-screen {
+        @apply
+        flex 
+        place-content-center;
+    }
+
+    .flexbox-center-on-screen {
+        @apply
+        flex flex-col 
+        place-items-center 
+        w-full p-5;
+    }
+
+    .box-border-theme {
+        @apply
+        rounded-lg 
+        border-r-8 
+        border-b-8 
+        border-r-myrtle-green 
+        border-b-myrtle-green;
+    }
+
+    #sign-in-box, 
+    #log-in-box, 
+    #upload-img-box {
+        @apply
+        h-auto 
+        py-10 
+        top-1/2 left-1/2 
+        -translate-x-1/2 
+        -translate-y-1/2 
+        z-10 
+        bg-gradient-to-br 
+        from-gainsboro 
+        via-white 
+        to-slate-300;
+    }
+
+    #sign-in-box {
+        @apply
+        w-8;
+    }
+
+    #log-in-box {
+        @apply
+        w-5;
+    }
+
+    .header-box {
+        @apply
+        flex
+        px-20
+        font-bold
+        text-lg
+        align-middle;
+    }
+
+    .header-box-tilte {
+        @apply
+        text-brown-coffee;
+    }
+
+    .header-hr {
+        @apply
+        block
+        mx-20 my-5
+        h-2
+        bg-myrtle-green;
+    }
+
+    .hr-box {
+        @apply
+        my-4
+        px-10
+        w-full;
+    }
+
+    .close-btn {
+        @apply
+        cursor-pointer
+        inline
+        text-red-600
+        hover:opacity-50;
+    }
+
+    .input-box {
+        @apply
+        p-2
+        w-full
+        shadow-xl
+        border-2 border-black;
+    }
+
+    .logo-icon {
+        @apply
+        mr-2
+        w-[32px] h-[32px]
+        translate-x-1
+        translate-y-1;
+    }
+
+    .wins-profile-box {
+        @apply
+        m-1
+        -translate-y-1;
+    }
+
+    .wins-profile-layout {
+        @apply
+        grid
+        grid-rows-2 grid-cols-2
+        m-1;
+    }
+
+    .wins-profile-img-item {
+        @apply
+        row-span-3 col-span-1
+        box-content
+        mr-2
+        w-10 h-10
+        -translate-y-3
+        rounded-full;
+    }
+
+    .wins-profile-username-item {
+        @apply
+        text-sm;
+    }
+
+    .wins-profile-user-setting-item {
+        @apply
+        col-span-1
+        -translate-x-1
+        -translate-y-1
+        text-xs;
+    }
+
+    .wins-profile-log-out-item {
+        @apply
+        col-span-1
+        px-1 pb-1
+        text-xs
+        text-gray-400;
+    }
+
+    #sign-in-btn, #log-in-btn {
+        @apply
+        rounded-lg
+        transition
+        ease-out delay-75
+        hover:bg-medium-aquamarine;
+    }
+
+    .submit-btn {
+        @apply
+        w-full
+        -translate-x-2
+        translate-y-2
+        text-center
+        rounded-md
+        bg-medium-aquamarine;
+    }
+
+    .forgot-password-btn {
+        @apply
+        w-full 
+        -translate-x-2
+        translate-y-2
+        text-center
+        rounded-md
+        text-slate-200
+        bg-gray-500;
+    }
+
+    .reset-btn {
+        @apply
+        w-full
+        -translate-x-2
+        translate-y-2
+        text-center
+        rounded-md
+        bg-yellow-200;
+    }
+
+    #dropdown-box {
+        @apply
+        hidden
+        max-md:inline-block;
+    }
+
+    .dropdown-menu-box {
+        @apply
+        absolute
+        z-10
+        w-[100px]
+        right-2
+        text-center
+        text-xs;
+    }
+
+    .dropdown-menu-elements {
+        @apply
+        w-full h-full
+        p-2
+        text-sm
+        rounded-sm
+        bg-gainsboro;
+    }
+
+    #dropdown-button {
+        @apply
+        bg-gray-700
+        text-medium-aquamarine; 
+    }
+
+    .dropdown-img {
+        @apply
+        m-2 w-6 h-6;
+    }
+
+    .web-box {
+        @apply
+        grid
+        grid-flow-row grid-cols-2
+        m-auto;
+    }
+
+    .note-diary-content-1 {
+        @apply
+        col-span-1; 
+    }
+
+    .note-diary-content-2 {
+        @apply
+        w-auto
+        row-span-5
+        col-span-1;
+    }
+
+    .note-diary-title-1 {
+        @apply
+        top-6 left-16
+        font-extrabold
+        text-xl
+        text-cosmic-latte
+        text-opacity-90; 
+    }
+
+    .note-diary-title-2 {
+        @apply
+        top-6 left-8
+        font-extrabold
+        text-xl
+        text-cosmic-latte
+        text-opacity-90; 
+    }
+
+    .note-diary-content-items {
+        @apply
+        p-5
+        h-auto
+        bg-middle-yellow-red;
+    }
+
+    .note-diary-content-img-bg {
+        @apply
+        bg-scroll
+        bg-cover 
+        bg-center
+        bg-repeat-y
+        bg-origin-content
+        bg-blend-soft-light 
+        bg-middle-yellow-red
+        rounded-lg;
+    }
+
+    .note-diary-form {
+        @apply
+        w-full
+        m-2;
+    }
+
+    .note-diary-form-items {
+        @apply
+        mx-5
+        my-1;
+    }
+
+    .note-diary-topic-label {
+        @apply
+        my-1
+        w-[80px]
+        text-center;
+    }
+
+    .note-diary-topic-input {
+        @apply
+        w-full h-[30px]
+        ml-2;
+    }
+
+    .note-diary-form-summit-box {
+        @apply
+        flex flex-row-reverse
+        mr-3;
+    }
+
+    #how-2-use {
+        @apply
+        col-span-1
+        mx-auto
+        p-10
+        text-base text-white;
+    }
+
+    .how-2-use-animation {
+        @apply
+        transition
+        ease-out
+        delay-700
+        hover:animate-bounce
+        hover:bg-yellow-200
+        hover:-translate-y-1
+        hover:scale-100 duration-100;
+    }
+
+    .description-title {
+        @apply
+        p-4
+        text-center
+        text-lg;
+    }
+
+    .description-content {
+        @apply
+        p-2
+        text-justify
+        text-base
+        indent-10;
+    }
+
+    #link-expand-description,
+    #link-minimize-description {
+        @apply
+        text-blue-400;
+    }
+
+    .profile-box {
+        @apply
+        w-[800px] h-fit
+        py-4
+        rounded-lg
+        shadow-lg
+        shadow-bitter-chocolate
+        bg-cosmic-latte;
+    }
+
+    #profile-img-box {
+        @apply
+        flex-center-on-screen
+        block
+        w-32 h-24
+        pb-4;
+    }
+
+    #upload-profile-img {
+        @apply
+        absolute
+        w-auto h-8
+        translate-x-16
+        -translate-y-1
+        border-2
+        border-black
+        rounded-lg
+        opacity-50
+        hover:opacity-100;
+    }
+
+    .profile-setting-form {
+        @apply
+        grid
+        grid-cols-2
+        gap-y-2
+        pt-8 pb-5 px-20
+        w-full h-full
+        place-items-stretch
+        max-sm:px-10
+        max-sm:py-5;
+    }
+
+    .profile-setting-box {
+        @apply
+        relative
+        col-span-2
+        flex flex-nowrap
+        justify-evenly
+        gap-x-4
+        w-full
+        max-sm:flex-col;
+    }
+
+    .profile-setting-btn {
+        @apply
+        w-1/4
+        rounded-lg
+        hover:opacity-80
+        max-sm:w-auto;
+    }
+
+    #diaries {
+        @apply
+        flex
+        flex-col
+        gap-y-3
+        w-full
+        h-[540px]
+        overflow-y-scroll;
+    }
+
+    .diary-box {
+        @apply
+        grid
+        grid-rows-3
+        gap-y-2
+        box-content
+        mx-5 p-8
+        w-auto h-[200px]
+        bg-white
+        rounded-lg
+        opacity-90
+        hover:opacity-100;
+    }
+}

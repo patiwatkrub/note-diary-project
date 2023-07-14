@@ -2,128 +2,85 @@ package main
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/patiwatkrub/note-diary-project/back-end/controllers"
 	"github.com/patiwatkrub/note-diary-project/back-end/domains"
+	"github.com/patiwatkrub/note-diary-project/back-end/middleware"
 	"github.com/patiwatkrub/note-diary-project/back-end/services"
 )
 
 func main() {
+	InitEnvironmentVariables()
+
 	db := initDatabase()
 	mailer := InitGoMail()
 
+	// User End point
 	userAccessDB := domains.NewUserAccessingDB(db)
-	mailAdapter := domains.NewMailValidateAccess(mailer)
+	mailAdapter := services.NewMailValidateAccess(mailer)
 	userAccessService := services.NewUserAccessingService(userAccessDB, mailAdapter)
 	userAccessController := controllers.NewUserAccessingController(userAccessService)
 
-	router := gin.Default()
+	// Note End point
+	noteAccessDB := domains.NewNoteAccessingDB(db)
+	noteAccessService := services.NewNoteAccessingService(noteAccessDB)
+	noteAccessController := controllers.NewNoteAccessingController(noteAccessService)
 
-	router.Static("/public", "./public")
-	router.StaticFile("/homepage.js", "./template/homepage.js")
-	router.StaticFile("/assets/dist/output.css", "./template/assets/dist/output.css")
-	router.LoadHTMLGlob("./template/*.html")
+	router := gin.Default()
+	router.Static("/public", "./public/img/")
+
+	// Set a lower memory limit for multipart forms (default is 32 MiB)
+	// 8 MiB
+	router.MaxMultipartMemory = 8 << 20
+
+	router.Use(middleware.CORSSetUp())
+
+	// localhost:8080/note-diary-api
+	api := router.Group("/note-diary-api")
 
 	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "homepage.html", nil)
+		c.String(200, "Server is running on port %v", os.Getenv("PORT"))
 	})
 
-	userPath := router.Group("/user")
-	userPath.GET("/create", userAccessController.CreateUserAccount)
+	// localhost:8080/note-diary-api/admin
+	admin := api.Group("/admin", middleware.RoleAdmin)
+	admin.GET("/users", userAccessController.GetUsers)
+	admin.GET("/users-deleted", userAccessController.GetDeletedUsers)
 
-	http.ListenAndServe(":8080", router)
+	// localhost:8080/note-diary-api/user
+	user := api.Group("/user")
+	user.POST("/create", userAccessController.CreateUserAccount)
 
-	// userA, err := userAccessDB.Create("UserA", "123456789", "patiwatkrubst@hotmail.com")
-	// if err != nil {
-	// 	panic(err)
-	// }
+	user.GET("/:username", userAccessController.GetUser)
+	user.GET("/:username/confirm", userAccessController.Verify)
 
-	/* userB, err := userAccessDB.Create("UserB", "987654321", "patiwatkrubnd@hotmail.com")
-	if err != nil {
-		panic(err)
-	}
-	userC, err := userAccessDB.Create("UserC", "123456", "patiwatkrubst_pgo@outlook.com")
-	if err != nil {
-		panic(err)
-	} */
+	user.POST("", userAccessController.Login)
 
-	// DB domains
-	/* users, err := userAccessDB.GetUsers()
-	if err != nil {
-		fmt.Errorf("error: %v\n", err)
-	}
-	fmt.Printf("%+v", users)
+	// localhost:8080/note-diary-api/user/:username
+	authorization := user.Group("/:username", middleware.Authorization())
+	authorization.GET("/", userAccessController.ExtendToken)
+	authorization.GET("/logout", userAccessController.LogOut)
 
-	aUser, err := userAccessDB.GetUserById(3)
-	if err != nil {
-		fmt.Errorf("error: %v\n", err)
-	}
-	fmt.Printf("%+v\n", aUser)
+	// Management user data
+	authorization.POST("/edit/profile", userAccessController.ChosenEditProfile)
+	authorization.POST("/edit/img-profile", userAccessController.UploadProfile)
+	authorization.POST("/reset-password", userAccessController.ResetPassword)
 
-	aUser, err = userAccessDB.Verify(3)
-	if err != nil {
-		fmt.Errorf("error: %v\n", err)
-	}
-	fmt.Printf("%+v\n", aUser)
+	authorization.DELETE("/delete", userAccessController.DeleteUser)
 
-	aUser, err = userAccessDB.ChangePassword(3, "secret-password")
-	if err != nil {
-		fmt.Errorf("error: %v\n", err)
-	}
-	fmt.Printf("%+v\n", aUser)
+	// Access note diary
+	// localhost:8080/note-diary-api/user/:username/note
+	noteDiary := authorization.Group("/note")
+	noteDiary.POST("/create", noteAccessController.MakeNote)
+	noteDiary.GET("/", noteAccessController.ShowNotes)
 
-	aUser, err = userAccessDB.ChangeEmail("patiwatkrubst_pgo@outlook.com", "patiwat_email@hotmail.com")
-	if err != nil {
-		fmt.Errorf("error: %v\n", err)
-	}
-	fmt.Printf("%+v\n", aUser)
+	// For fix Sonar Lint duplicating
+	takeOneNote := "/:note-id"
+	noteDiary.GET(takeOneNote, noteAccessController.ShowNote)
+	noteDiary.PATCH(takeOneNote, noteAccessController.EditNote)
+	noteDiary.DELETE(takeOneNote, noteAccessController.DeleteNote)
 
-	userAccessDB.Delete(1)
-	userAccessDB.Delete(2)
-
-	users, err = userAccessDB.GetUsers()
-	if err != nil {
-		fmt.Errorf("error: %v\n", err)
-	}
-	fmt.Printf("%+v", users)
-
-	userAccessDB.Delete(3)
-
-	users, err = userAccessDB.GetUsers()
-	if err != nil {
-		fmt.Errorf("error: %v\n", err)
-	}
-	fmt.Printf("%+v", users) */
-
-	// Services
-	/*err := userAccessService.CreateUser("UserA", "123456789", "patiwatkrubst@hotmail.com")
-	if err != nil {
-		panic(err)
-	}
-
-	err = userAccessService.CreateUser("UserB", "987654321", "patiwatkongram@gmail.com")
-	if err != nil {
-		panic(err)
-	}
-
-	err = userAccessService.CreateUser("UserC", "123456", "patiwatkrubst_pgo@outlook.com")
-	if err != nil {
-		panic(err)
-	}
-
-	users, err := userAccessService.GetUsers()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("Users: %+v\n", users)
-
-	user, err := userAccessService.GetUser(1)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("User: %+v\n", user)*/
-
+	http.ListenAndServe(os.Getenv("PORT"), router)
 }

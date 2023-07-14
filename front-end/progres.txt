@@ -1,0 +1,27 @@
+27/5/66
+[Requirement ต่อไป]
+    [ยังไม่เสร็จ]
+    - สร้างคลาสสำหรับเก็บ diaries
+    - สร้างคลาสตามชนิดของ diary(note/todo list)
+    - ทำให้ note และ todo list สืบทอด diaries แบบ oop
+    - สร้างตัวเก็บข้อมูลสำหรับ diaries ใน app.js
+    - ทำการจำแนกชนิดของ diary กับ html, tailwindcss
+    - การสร้าง และ การตอบสนอง Todo List
+    - panel on hover on diary for open modal
+    - ทำ modal ของ diary
+    - ลบ diary
+
+    [ทดแทนไปก่อน]
+    * ยังแก้ solution ไม่ได้
+    - ต้องการทำตัวข้อมูลในภายใน loginForm.js แล้ว export ไว้สำหรับใช้งานต่อไปได้สะดวก [ใช้ Base64 เข้ารหัสไปก่อน]
+    * รอทำ backend
+    - การแก้ไขข้อมูลผู้ใช้งาน ในหน้า profile
+    - อัพเดตของข้อมูลผู้ใช้ในหน้าแสดงผล Front-end UI
+
+    [เสร็จ]
+    - การสร้างข้อมูลสมาชิก
+    - การอนุญาตให้ผู้ใช้สร้าง Todo List เมื่อเข้าสู่ระบบ
+    - การลบบัญชีผู้ใช้งาน
+
+    [ตกไป]
+    - สร้าง Javascript สำหรับแปลงระหว่าง JSON กับ string

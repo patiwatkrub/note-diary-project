@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../src/assets/icons/logo-icon-32px.png" type="image/x-icon">
+    <link href="../src/assets/output.css" rel="stylesheet">
+    <title>NOTE DIARY - PROFILE</title>
+</head>
+<body class="font-serif">
+    <div class="bg-theme py-16 flex-center-on-screen">
+        <div class="box-border profile-box max-md:w-3/4">
+            <div class="flexbox-center-on-screen">
+                <div class="hr-box">
+                    <hr class="h-1 bg-bitter-chocolate opacity-20">
+                </div>
+                <div id="profile-img-box justify-items-center">
+                    <img id="profile-img" class="w-24 h-24 object-cover rounded-full opacity-70" src="../src/assets/images/profile-photo-default.png" alt="user-profile">
+                    <button id="upload-profile-img">
+                        <img src="../src/assets/icons/upload-image-icon-24px.png" alt="Upload images">
+                    </button>
+                </div>
+                <span id="profile-user-box" class="pt-4">
+                    
+                </span>
+                <div class="hr-box">
+                    <hr class="h-1 bg-bitter-chocolate opacity-20">
+                </div>
+                <form method="post" action="" class="profile-setting-form">
+                    <div id="user-email-box" class="profile-setting-box">
+                        <label class="flex-initial w-[140px] text-sm" for="user-email">Email:</label>
+                        <input class="grow max-sm:order-last" type="text" name="user-email" id="user-email" value="">
+                        <a class="w-4 h-4 max-sm:absolute max-sm:translate-x-12 max-sm:-translate-y-4">
+                            <img class="w-full h-full" src="../src/assets/icons/edit-icon.png" alt="Edit Icon">
+                        </a>
+                        <a class="hidden w-4 h-4 max-sm:absolute max-sm:translate-x-14 max-sm:-translate-y-5">
+                            <span class="w-full h-full text-red-600">&cross;</span>
+                        </a>
+                    </div>
+                    <div id="confirm-password-to-change-email-box" class="hidden profile-setting-box">
+                        <label class="flex-initial w-[140px] text-sm" for="confirm-password-to-change-email" class="">Password:</label>
+                        <input class="grow mr-8 max-sm:mr-0" type="password" class="" name="confirm-password-to-change-email" id="confirm-password-to-change-email">
+                    </div>
+                    <div id="user-password-box" class="profile-setting-box">
+                        <label class="flex-initial w-[140px] text-sm" for="user-password" class="">Password:</label>
+                        <input class="grow max-sm:order-last" type="password" name="user-password" id="user-password" value="">
+                        <a class="w-4 h-4 max-sm:absolute max-sm:translate-x-[70px] max-sm:-translate-y-4">
+                            <img class="w-full h-full" src="../src/assets/icons/edit-icon.png" alt="Edit Icon">
+                        </a>
+                    </div>
+                    <div id="confirm-user-password-box" class="hidden profile-setting-box">
+                        <label class="flex-initial w-[140px] text-sm" for="confirm-password-to-change-password" class="">Password:</label>
+                        <input class="grow max-sm:order-last" type="password" name="confirm-password-to-change-password" id="confirm-password-to-change-password">
+                        <a class="w-4 h-4 max-sm:absolute max-sm:translate-x-[70px] max-sm:-translate-y-5">
+                            <span class="w-full h-full text-red-600">&cross;</span>
+                        </a>
+                    </div>
+                    <div id="new-password-box" class="relative col-span-2 hidden flex-col gap-y-2 pb-5 max-sm:w-full max-sm:flex-nowrap">
+                        <div class="flex flex-nowrap justify-evenly gap-x-4 w-full max-sm:flex-col">
+                            <label class="flex-initial w-[140px] text-sm" for="new-password">New Password:</label>
+                            <input class="grow mr-8 max-sm:mr-0" type="password" name="new-password" id="new-password" placeholder="New Password">
+                        </div>
+                        <div class="flex flex-nowrap justify-evenly gap-x-4 w-full max-sm:flex-col">
+                            <label class="flex-initial w-[140px] text-sm" for="confirm-new-password">Confirm Password:</label>
+                            <input class="grow mr-8 max-sm:mr-0" type="password" name="confirm-new-password" id="confirm-new-password" placeholder="Confirm New Password">
+                        </div>
+                    </div>
+                    <button class="profile-setting-btn place-self-end"><a href="./homepage.html">Back</a></button>
+                    <button class="profile-setting-btn place-self-start bg-green-200" type="submit">Apply</button>
+                </form>
+                <div class="hr-box">
+                    <hr class="h-1 bg-bitter-chocolate opacity-20">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../src/app.js" type="module"></script>
+    <script src="../src/components/pages/profile.js" type="module"></script>
+</body>
+</html>

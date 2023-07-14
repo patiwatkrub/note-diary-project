@@ -1,21 +1,26 @@
 package main
 
 import (
-	"log"
 	"os"
+	"strconv"
 
+	"github.com/patiwatkrub/note-diary-project/back-end/logs"
 	"gopkg.in/gomail.v2"
 )
 
-var mMailHost = "smtp.gmail.com"
-var mMailPort = 587
-var mMailUser = os.Getenv("GOMAIL_USERNAME")
-var mMailPassword = os.Getenv("GOMAIL_PASSWORD")
-
 func InitGoMail() *gomail.Dialer {
-	log.Println("Initial... mail server")
-	dial := gomail.NewDialer(mMailHost, mMailPort, mMailUser, mMailPassword)
+	logs.Info("Initial... mail server")
 
-	log.Println("Done...")
+	host := os.Getenv("GOMAIL_host")
+	port, err := strconv.Atoi(os.Getenv("GOMAIL_PORT"))
+	if err != nil {
+		panic(err)
+	}
+	username := os.Getenv("GOMAIL_USERNAME")
+	password := os.Getenv("GOMAIL_PASSWORD")
+
+	dial := gomail.NewDialer(host, port, username, password)
+
+	logs.Info("Done...")
 	return dial
 }

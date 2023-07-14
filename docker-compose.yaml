@@ -1,0 +1,15 @@
+version : '2.10'
+services:
+    db:
+        image: postgres:latest
+        container_name: notediarydb
+        environment:
+            POSTGRES_PASSWORD: p@ssword@pgsql
+        ports:
+            - 5432:5432
+        volumes:
+            - notediary-postgres:/var/lib/postgresql/data
+        
+volumes:
+  notediary-postgres:
+    external: true
