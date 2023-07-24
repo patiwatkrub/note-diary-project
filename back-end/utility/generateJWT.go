@@ -3,9 +3,9 @@ package utility
 import (
 	"errors"
 	"fmt"
-	"os"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/spf13/viper"
 )
 
 func CreateJWT(username string) (string, error) {
@@ -14,9 +14,9 @@ func CreateJWT(username string) (string, error) {
 		ExpiresAt: GenerateExpireTime(),
 	})
 
-	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_JWT_TOKEN_KEY")))
+	tokenString, err := token.SignedString([]byte(viper.GetString("app.secret_jwt_key")))
 	if err != nil {
-		err = errors.New("Internal Server Error")
+		err = errors.New("internal server error")
 		return "", err
 	}
 	return tokenString, nil
@@ -28,6 +28,6 @@ func ValidateToken(encodedToken string) (*jwt.Token, error) {
 			return nil, fmt.Errorf("unauthorized: you have not key to access")
 		}
 
-		return []byte(os.Getenv("SECRET_JWT_TOKEN_KEY")), nil
+		return []byte(viper.GetString("app.secret_jwt_key")), nil
 	})
 }

@@ -1,10 +1,8 @@
 package domains
 
 import (
-	"errors"
 	"fmt"
 
-	"github.com/patiwatkrub/note-diary-project/back-end/logs"
 	"gorm.io/gorm"
 )
 
@@ -42,8 +40,7 @@ func (note noteAccessDB) CreateNote(note_id string, author string, title string,
 
 	if aNote.CreatedBy == nil {
 		tx.Rollback()
-		err = errors.New("can not create a note with author")
-		return nil, err
+		return nil, ErrInvalidAuthorToCreateNote
 	}
 
 	fmt.Printf("%+v", aNote)
@@ -52,9 +49,7 @@ func (note noteAccessDB) CreateNote(note_id string, author string, title string,
 
 	if result.Error != nil {
 		tx.Rollback()
-		err = errors.New("can not record note data")
-		logs.Debug(err)
-		return nil, err
+		return nil, ErrCreateNoteFailed
 	}
 
 	return aNote, nil
@@ -77,8 +72,7 @@ func (note noteAccessDB) GetNote(note_id, author string) (aNote *Note, err error
 
 	if aNote.CreatedBy == nil {
 		tx.Rollback()
-		err = errors.New("can not get a note with noteID and author")
-		return nil, err
+		return nil, ErrInvalidNoteIDAndAuthor
 	}
 
 	return aNote, nil
@@ -94,8 +88,7 @@ func (note noteAccessDB) GetNotes(author string) (notes []Note, err error) {
 	}
 
 	if related.RowsAffected == 0 {
-		err := errors.New("can not get notes with author")
-		return []Note{}, err
+		return []Note{}, ErrGetNotesFailed
 	}
 
 	return notes, nil
@@ -117,14 +110,12 @@ func (note noteAccessDB) UpdateNote(note_id string, author string, diaryType int
 
 	if aNote.CreatedBy == nil {
 		tx.Rollback()
-		err = errors.New("can not update a note with author")
-		return nil, err
+		return nil, ErrInvalidAuthorToUpdateNote
 	}
 
 	if aNote.DiaryType != diaryType {
 		tx.Rollback()
-		err = errors.New("can not update a note with invalid diary type")
-		return nil, err
+		return nil, ErrInvalidDiaryType
 	}
 
 	aNote.Detail = detail
@@ -132,8 +123,7 @@ func (note noteAccessDB) UpdateNote(note_id string, author string, diaryType int
 	updatedNoteDetailStm := tx.Save(&aNote)
 	if updatedNoteDetailStm.Error != nil {
 		tx.Rollback()
-		err = errors.New("can not update note data for change detail")
-		return nil, err
+		return nil, ErrUpdateNoteFailed
 	}
 
 	tx.Commit()
@@ -156,8 +146,7 @@ func (note noteAccessDB) DeleteNote(note_id, author string) error {
 
 	if aNote.CreatedBy == nil {
 		tx.Rollback()
-		err := errors.New("user not found")
-		return err
+		return ErrInvlidAuthorToDeleteNote
 	}
 
 	err := tx.Where("note_id = ?", note_id).Delete(aNote)

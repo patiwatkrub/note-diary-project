@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"github.com/patiwatkrub/note-diary-project/back-end/domains"
 	"github.com/patiwatkrub/note-diary-project/back-end/logs"
 	"github.com/patiwatkrub/note-diary-project/back-end/utility"
+	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -28,20 +28,20 @@ func (SqlLogger) Trace(ctx context.Context, begin time.Time, fc func() (sql stri
 	logs.Debug(sqlCommand)
 }
 
-func initDatabase() *gorm.DB {
+func InitDatabase() *gorm.DB {
 	logs.Info("Connecting... database")
 	dsn := fmt.Sprintf("%v://%v:%v@%v:%v/%v?TimeZone=Asia/Bangkok",
-		os.Getenv("POSTGRES_DRIVER"),
-		os.Getenv("POSTGRES_USERNAME"),
-		os.Getenv("POSTGRES_PASSWORD"),
-		os.Getenv("POSTGRES_HOST"),
-		os.Getenv("POSTGRES_PORT"),
-		os.Getenv("POSTGRES_DATABASE"))
+		viper.GetString("db.driver"),
+		viper.GetString("db.username"),
+		viper.GetString("db.password"),
+		viper.GetString("db.host"),
+		viper.GetInt("db.port"),
+		viper.GetString("db.database"))
 
 	dial := postgres.Open(dsn)
 
 	db, err := gorm.Open(dial, &gorm.Config{
-		Logger:      &SqlLogger{},
+		// Logger:      &SqlLogger{},
 		DryRun:      false,
 		QueryFields: true,
 		NowFunc:     utility.GetTime,
@@ -50,6 +50,7 @@ func initDatabase() *gorm.DB {
 	if err != nil {
 		log.Panic("ERROR! to connect database.")
 	}
+
 	db.AutoMigrate(&domains.User{}, &domains.Note{})
 
 	logs.Info("Success...")

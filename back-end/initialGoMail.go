@@ -1,23 +1,18 @@
 package main
 
 import (
-	"os"
-	"strconv"
-
 	"github.com/patiwatkrub/note-diary-project/back-end/logs"
+	"github.com/spf13/viper"
 	"gopkg.in/gomail.v2"
 )
 
 func InitGoMail() *gomail.Dialer {
 	logs.Info("Initial... mail server")
 
-	host := os.Getenv("GOMAIL_host")
-	port, err := strconv.Atoi(os.Getenv("GOMAIL_PORT"))
-	if err != nil {
-		panic(err)
-	}
-	username := os.Getenv("GOMAIL_USERNAME")
-	password := os.Getenv("GOMAIL_PASSWORD")
+	host := viper.GetString("mail.host")
+	port := viper.GetInt("mail.port")
+	username := viper.GetString("mail.username")
+	password := viper.GetString("mail.password")
 
 	dial := gomail.NewDialer(host, port, username, password)
 

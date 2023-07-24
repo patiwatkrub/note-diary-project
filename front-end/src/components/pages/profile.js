@@ -16,7 +16,7 @@ if (isLogic) {
         <span>
             ${userData.username}
         </span>
-        <span class="absolute pl-2 -translate-y-3">
+        <span class="absolute -translate-y-3">
             <button id='delete-user-btn' class="w-6 h-6 bg-red-600 rounded-lg hover:opacity-75">
                 <img src="../src/assets/icons/icons8-delete-32.png" alt="delete-user"/>
             </button>

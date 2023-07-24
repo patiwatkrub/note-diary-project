@@ -10,7 +10,7 @@ import (
 
 // For fix Sonar Lint duplicating
 var tokenKey string = "jwt-token-auth"
-var intialPath string = "/note-diary-api/"
+var initialPath string = "/note-diary-api/"
 
 var badRequestStr string = "Bad Request"
 
@@ -96,7 +96,7 @@ func (user *userAccessController) Login(ctx *gin.Context) {
 
 	// ctx.SetSameSite(http.SameSiteLaxMode)
 	// Set cookie is expire in 2 hour(7200) and Time Zone GMT+7(25200)
-	ctx.SetCookie(tokenKey, token, 7200+25200, intialPath, "localhost", false, true)
+	ctx.SetCookie(tokenKey, token, 7200+25200, initialPath, "localhost", false, true)
 
 	if verifiedStatus == 0 {
 		ctx.JSON(200, gin.H{
@@ -124,7 +124,7 @@ func (user *userAccessController) ExtendToken(ctx *gin.Context) {
 	claims := token.Claims.(jwt.MapClaims)
 	claims["exp"] = utility.GenerateExpireTime()
 
-	ctx.SetCookie(tokenKey, cookie, 7200+25200, intialPath, "localhost", false, true)
+	ctx.SetCookie(tokenKey, cookie, 7200+25200, initialPath, "localhost", false, true)
 
 	ctx.Status(200)
 }
@@ -132,7 +132,7 @@ func (user *userAccessController) ExtendToken(ctx *gin.Context) {
 func (user *userAccessController) LogOut(ctx *gin.Context) {
 	username := ctx.Param("username")
 
-	ctx.SetCookie(tokenKey, "", -1, intialPath, "localhost", false, true)
+	ctx.SetCookie(tokenKey, "", -1, initialPath, "localhost", false, true)
 
 	ctx.JSON(200, gin.H{
 		username: "is log out",

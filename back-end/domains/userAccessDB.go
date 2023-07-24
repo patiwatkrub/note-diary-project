@@ -8,8 +8,10 @@ import (
 )
 
 // For fix Sonar Lint duplicating
-var queryStm string = "SELECT number, username, password, email, img_profile, confirmation, created_at, updated_at, deleted_at FROM users WHERE username = ?"
-var userDeletedError string = "user is deleted"
+var queryUsersStm string = "SELECT number, username, password, email, img_profile, confirmation, created_at, updated_at, deleted_at FROM users"
+var queryUsernameStm string = "SELECT number, username, password, email, img_profile, confirmation, created_at, updated_at, deleted_at FROM users WHERE username = ?"
+var queryUsernameAndPasswordStm string = "SELECT number, username, password, email, img_profile, confirmation, created_at, updated_at, deleted_at FROM users WHERE username = ? AND password = ?"
+var queryUsernameAndEmailStm string = "SELECT number, username, password, email, img_profile, confirmation, created_at, updated_at, deleted_at FROM users WHERE username = ? AND password = ?"
 
 type userAccessDB struct {
 	db *gorm.DB
@@ -34,35 +36,33 @@ func (user *userAccessDB) Create(username, password, email string) (err error) {
 	defaultImgEncoder := base64.StdEncoding.EncodeToString([]byte(defaultImg))
 	aUser.Img_Profile = defaultImgEncoder
 
-	result := tx.Raw(queryStm, username).Scan(&aUser)
+	result := tx.Raw(queryUsernameStm, username).Scan(&aUser)
 	if result.RowsAffected > 0 {
 		tx.Rollback()
-		err = errors.New("the username is existed")
-		return err
+		return ErrUsernameIsExist
 	}
 
 	//Insert new User into database
 	result = user.db.Create(&aUser)
 	if result.Error != nil {
 		tx.Rollback()
-		err = errors.New("can not record user data")
-		return err
+		return ErrDBCreateUserFailed
 	}
+
+	tx.Commit()
 
 	return nil
 }
 
 func (user *userAccessDB) GetUser(username string) (aUser *User, err error) {
 
-	result := user.db.Raw(queryStm, username).Scan(&aUser)
+	result := user.db.Raw(queryUsernameStm, username).Scan(&aUser)
 	if result.RowsAffected == 0 {
-		err = errors.New("user is not found")
-		return nil, err
+		return nil, ErrUserNotFound
 	}
 
 	if aUser.DeletedAt.Valid {
-		err = errors.New(userDeletedError)
-		return nil, err
+		return nil, ErrUserDeleted
 	}
 
 	return aUser, nil
@@ -70,10 +70,10 @@ func (user *userAccessDB) GetUser(username string) (aUser *User, err error) {
 
 func (user *userAccessDB) GetUsers() (users []User, err error) {
 
-	result := user.db.Raw(queryStm).Scan(&users)
+	result := user.db.Raw(queryUsersStm).Scan(&users)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		err = errors.New("can not get user data")
-		return []User{}, err
+
+		return []User{}, ErrGetUsersFailed
 	}
 
 	return users, nil
@@ -89,13 +89,12 @@ func (user *userAccessDB) GetDeletedUsers() (users []User, err error) {
 }
 
 func (user *userAccessDB) ValidationUser(username, password string) (aUser *User, err error) {
-	result := user.db.Raw(queryStm, username, password).Scan(&aUser)
+	result := user.db.Raw(queryUsernameAndPasswordStm, username, password).Scan(&aUser)
 	if result.RowsAffected == 0 {
-		err = errors.New("username and password is not valid")
-		return nil, err
+		return nil, ErrInvalidUsernamePassword
 	}
 	if aUser.DeletedAt.Valid {
-		err = errors.New(userDeletedError)
+		err = ErrUserDeleted
 		return nil, err
 	}
 	return aUser, nil
@@ -108,18 +107,16 @@ func (user *userAccessDB) Verify(username string) (err error) {
 	tx := user.db.Begin()
 
 	//Checking user has exist
-	result := tx.Raw(queryStm, username).Scan(&aUser)
+	result := tx.Raw(queryUsernameStm, username).Scan(&aUser)
 
 	if result.RowsAffected == 0 {
 		tx.Rollback()
-		err = errors.New("the user not found for verify email")
-		return err
+		return ErrEmailNotFound
 	}
 
 	if aUser.DeletedAt.Valid {
 		tx.Rollback()
-		err = errors.New(userDeletedError)
-		return err
+		return ErrUserDeleted
 	}
 
 	aUser.Confirmation = 1
@@ -128,8 +125,7 @@ func (user *userAccessDB) Verify(username string) (err error) {
 	updateConfirmationstm := tx.Save(&aUser)
 	if updateConfirmationstm.Error != nil {
 		tx.Rollback()
-		err = errors.New("can not verify user data")
-		return err
+		return ErrVerifyFailed
 	}
 
 	//Commit transection statement
@@ -141,17 +137,15 @@ func (user *userAccessDB) Verify(username string) (err error) {
 func (user *userAccessDB) ResetPassword(username, email, newPassword string) (aUser *User, err error) {
 	tx := user.db.Begin()
 
-	result := tx.Raw(queryStm, username, email).Scan(&aUser)
+	result := tx.Raw(queryUsernameAndEmailStm, username, email).Scan(&aUser)
 	if result.RowsAffected == 0 {
 		tx.Rollback()
-		err = errors.New("the email note found for reset password")
-		return nil, err
+		return nil, ErrEmailNotFoundToResetPassword
 	}
 
 	if aUser.DeletedAt.Valid {
 		tx.Rollback()
-		err = errors.New(userDeletedError)
-		return nil, err
+		return nil, ErrUserDeleted
 	}
 
 	aUser.Password = newPassword
@@ -159,8 +153,7 @@ func (user *userAccessDB) ResetPassword(username, email, newPassword string) (aU
 	updatedPasswordStm := tx.Save(&aUser)
 	if updatedPasswordStm.Error != nil {
 		tx.Rollback()
-		err = errors.New("can not update user data for reset password")
-		return nil, err
+		return nil, ErrResetPasswordFailed
 	}
 
 	tx.Commit()
@@ -171,17 +164,15 @@ func (user *userAccessDB) ResetPassword(username, email, newPassword string) (aU
 func (user *userAccessDB) ChangePassword(username, newPassword string) (aUser *User, err error) {
 	tx := user.db.Begin()
 
-	result := tx.Raw(queryStm, username).Scan(&aUser)
+	result := tx.Raw(queryUsernameStm, username).Scan(&aUser)
 	if result.RowsAffected == 0 {
 		tx.Rollback()
-		err = errors.New("the user not found for change password")
-		return nil, err
+		return nil, ErrUserNotFoundToChangePassword
 	}
 
 	if aUser.DeletedAt.Valid {
 		tx.Rollback()
-		err = errors.New(userDeletedError)
-		return nil, err
+		return nil, ErrUserDeleted
 	}
 
 	aUser.Password = newPassword
@@ -189,8 +180,7 @@ func (user *userAccessDB) ChangePassword(username, newPassword string) (aUser *U
 	updatePasswordStm := tx.Save(&aUser)
 	if updatePasswordStm.Error != nil {
 		tx.Rollback()
-		err = errors.New("can not update user data for change password")
-		return nil, err
+		return nil, ErrChangePasswordFailed
 	}
 	tx.Commit()
 
@@ -200,25 +190,22 @@ func (user *userAccessDB) ChangePassword(username, newPassword string) (aUser *U
 func (user *userAccessDB) ChangeEmail(username, newEmail string) (aUser *User, err error) {
 	tx := user.db.Begin()
 
-	result := tx.Raw(queryStm, username).Scan(&aUser)
+	result := tx.Raw(queryUsernameStm, username).Scan(&aUser)
 	if result.RowsAffected == 0 {
 		tx.Rollback()
-		err = errors.New("the user not found for change email")
-		return nil, err
+		return nil, ErrUserNotFoundToChangeEmail
 	}
 
 	if aUser.DeletedAt.Valid {
 		tx.Rollback()
-		err = errors.New(userDeletedError)
-		return nil, err
+		return nil, ErrUserDeleted
 	}
 
 	aUser.Email = newEmail
 	updateNewEmailStm := tx.Save(&aUser)
 	if updateNewEmailStm.Error != nil {
 		tx.Rollback()
-		err = errors.New("can not update user data for change email")
-		return nil, err
+		return nil, ErrChangeEmailFailed
 	}
 
 	tx.Commit()
@@ -229,16 +216,15 @@ func (user *userAccessDB) ChangeEmail(username, newEmail string) (aUser *User, e
 func (user *userAccessDB) ChangeEmailAndPassword(username, newEmail, newPassowrd string) (aUser *User, err error) {
 	tx := user.db.Begin()
 
-	result := tx.Raw(queryStm, username).Scan(&aUser)
+	result := tx.Raw(queryUsernameStm, username).Scan(&aUser)
 	if result.RowsAffected == 0 {
 		tx.Rollback()
-		err = errors.New("the user not found for change email and password")
-		return nil, err
+		return nil, ErrUserNotFoundToChangeEmailAndPassword
 	}
 
 	if aUser.DeletedAt.Valid {
 		tx.Rollback()
-		err = errors.New(userDeletedError)
+		err = ErrUserDeleted
 		return nil, err
 	}
 
@@ -248,8 +234,7 @@ func (user *userAccessDB) ChangeEmailAndPassword(username, newEmail, newPassowrd
 	updateUserDataStm := tx.Save(&aUser)
 	if updateUserDataStm.Error != nil {
 		tx.Rollback()
-		err = errors.New("can not update user data for change email and password")
-		return nil, err
+		return nil, ErrChangeEmailAndPasswordFailed
 	}
 
 	tx.Commit()
@@ -260,17 +245,15 @@ func (user *userAccessDB) ChangeEmailAndPassword(username, newEmail, newPassowrd
 func (user *userAccessDB) ChangeImg(username, imageName string) (aUser *User, err error) {
 	tx := user.db.Begin()
 
-	result := tx.Raw(queryStm, username).Scan(&aUser)
+	result := tx.Raw(queryUsernameStm, username).Scan(&aUser)
 	if result.RowsAffected == 0 {
 		tx.Rollback()
-		err = errors.New("the user not found for change profile")
-		return nil, err
+		return nil, ErrUserNotFoundToChangeProfile
 	}
 
 	if aUser.DeletedAt.Valid {
 		tx.Rollback()
-		err = errors.New(userDeletedError)
-		return nil, err
+		return nil, ErrUserDeleted
 	}
 
 	aUser.Img_Profile = imageName
@@ -278,8 +261,7 @@ func (user *userAccessDB) ChangeImg(username, imageName string) (aUser *User, er
 	updateUserImgStm := tx.Save(&aUser)
 	if updateUserImgStm.Error != nil {
 		tx.Rollback()
-		err = errors.New("can not update user data for change profile image")
-		return nil, err
+		return nil, ErrChangeProfileFailed
 	}
 
 	tx.Commit()

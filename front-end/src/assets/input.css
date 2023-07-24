@@ -16,7 +16,7 @@
     .bg-theme {
         @apply
         w-auto
-        h-screen
+        h-auto
         lg:h-auto
         max-lg:min-h-full
         bg-gradient-to-b 
@@ -51,7 +51,7 @@
     #log-in-box, 
     #upload-img-box {
         @apply
-        h-auto 
+        h-auto
         py-10 
         top-1/2 left-1/2 
         -translate-x-1/2 
@@ -63,7 +63,8 @@
         to-slate-300;
     }
 
-    #sign-in-box {
+    /* Can not understand this line below setting for? */
+    /* #sign-in-box {
         @apply
         w-8;
     }
@@ -71,7 +72,7 @@
     #log-in-box {
         @apply
         w-5;
-    }
+    } */
 
     .header-box {
         @apply
@@ -242,7 +243,7 @@
 
     .dropdown-img {
         @apply
-        m-2 w-6 h-6;
+        m-2 w-6 h-10;
     }
 
     .web-box {
@@ -394,8 +395,8 @@
         @apply
         absolute
         w-auto h-8
-        translate-x-16
-        -translate-y-1
+        translate-x-14
+        -translate-y-10
         border-2
         border-black
         rounded-lg

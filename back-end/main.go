@@ -1,20 +1,21 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/patiwatkrub/note-diary-project/back-end/controllers"
 	"github.com/patiwatkrub/note-diary-project/back-end/domains"
 	"github.com/patiwatkrub/note-diary-project/back-end/middleware"
 	"github.com/patiwatkrub/note-diary-project/back-end/services"
+	"github.com/spf13/viper"
 )
 
 func main() {
 	InitEnvironmentVariables()
 
-	db := initDatabase()
+	db := InitDatabase()
 	mailer := InitGoMail()
 
 	// User End point
@@ -41,7 +42,7 @@ func main() {
 	api := router.Group("/note-diary-api")
 
 	router.GET("/", func(c *gin.Context) {
-		c.String(200, "Server is running on port %v", os.Getenv("PORT"))
+		c.String(200, "Server is running on port %v", viper.GetInt("app.port"))
 	})
 
 	// localhost:8080/note-diary-api/admin
@@ -82,5 +83,5 @@ func main() {
 	noteDiary.PATCH(takeOneNote, noteAccessController.EditNote)
 	noteDiary.DELETE(takeOneNote, noteAccessController.DeleteNote)
 
-	http.ListenAndServe(os.Getenv("PORT"), router)
+	http.ListenAndServe(fmt.Sprintf(":%d", viper.GetInt("app.port")), router)
 }

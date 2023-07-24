@@ -1,14 +1,13 @@
 package middleware
 
 import (
-	"os"
-
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
 func RoleAdmin(ctx *gin.Context) {
 
-	secretAdminKey := os.Getenv("SECRET_API_KEY")
+	secretAdminKey := viper.GetString("app.secret_api_key")
 	adminKey := ctx.Request.Header.Get("admin-key")
 
 	if adminKey != secretAdminKey {

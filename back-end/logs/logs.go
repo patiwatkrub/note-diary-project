@@ -41,7 +41,6 @@ func Debug(message interface{}, fields ...zap.Field) {
 }
 
 func Error(message interface{}, fields ...zap.Field) {
-
 	switch eType := message.(type) {
 	case error:
 		log.Error(eType.Error(), fields...)

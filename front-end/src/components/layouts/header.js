@@ -44,11 +44,11 @@ header.innerHTML = `
     </span>
 </span>
 <span id="dropdown-box">
-    <button id="dropdown-button" class="peer" type="button">
+    <div id="dropdown-button" class="peer rounded-md">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="dropdown-img" alt="Dropdown icon">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
         </svg>
-    </button>
+    </div>
     <!-- problem: this is front-end section.but i want to use golang template, how could i call the template?
     solve: methodology use path. -->
     <div id="dropdown-content" class="hidden dropdown-menu-box">
