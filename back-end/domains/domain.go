@@ -4,7 +4,7 @@ import "errors"
 
 var (
 	// Global User Error Variables
-	ErrUsernameIsExist                      = errors.New("the username is existed")
+	ErrUsernameAndEmailIsExist              = errors.New("the username and email is existed")
 	ErrDBCreateUserFailed                   = errors.New("can not record user data")
 	ErrUserNotFound                         = errors.New("user is not found")
 	ErrUserDeleted                          = errors.New("user is deleted")

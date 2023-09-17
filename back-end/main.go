@@ -39,7 +39,7 @@ func main() {
 	router.Use(middleware.CORSSetUp())
 
 	// localhost:8080/note-diary-api
-	api := router.Group("/note-diary-api")
+	api := router.Group("/api")
 
 	router.GET("/", func(c *gin.Context) {
 		c.String(200, "Server is running on port %v", viper.GetInt("app.port"))

@@ -53,6 +53,13 @@ func InitDatabase() *gorm.DB {
 
 	db.AutoMigrate(&domains.User{}, &domains.Note{})
 
+	// Change image profile URL
+	// defaultImgEncoder := base64.StdEncoding.EncodeToString([]byte("http://notediary:8081/public/profile-photo-default.png"))
+	// result := db.Exec("UPDATE users SET img_profile = ?", defaultImgEncoder)
+	// if result.Error != nil {
+	// 	panic(result.Error)
+	// }
+
 	logs.Info("Success...")
 	return db
 }

@@ -12,7 +12,6 @@ import (
 // 3.Key is valid and User is same person
 func Authorization() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-
 		username := ctx.Param("username")
 
 		cookie, err := ctx.Cookie("jwt-token-auth")

@@ -20,7 +20,7 @@ func NewEmailNotVerify() CustomError {
 }
 
 // Error: Invalid Email Format
-func NewInvlidEmailPattern() CustomError {
+func NewInvalidEmailPattern() CustomError {
 	return CustomError{
 		StatusCode:   400,
 		ErrorHeader:  "Unsuccess",
@@ -69,14 +69,14 @@ func NewBadRequest() CustomError {
 	return CustomError{
 		StatusCode:   400,
 		ErrorHeader:  "Unsuccess",
-		ErrorMessage: "Bad Request",
+		ErrorMessage: "Username Or Email is existed",
 	}
 }
 
 // Error: Invalid username is not matching pattern
 func NewInvalidUsernamePattern() CustomError {
 	return CustomError{
-		StatusCode:   404,
+		StatusCode:   400,
 		ErrorHeader:  "Unsuccess",
 		ErrorMessage: "Username and Password is invalid",
 	}
@@ -85,7 +85,7 @@ func NewInvalidUsernamePattern() CustomError {
 // Error: Invalid username is not length more than 6 and less than 20
 func NewInvalidUsernameLength() CustomError {
 	return CustomError{
-		StatusCode:   404,
+		StatusCode:   400,
 		ErrorHeader:  "Unsuccess",
 		ErrorMessage: "Username must be length more than 6 and less than 20",
 	}
@@ -94,7 +94,7 @@ func NewInvalidUsernameLength() CustomError {
 // Error: Invalid username and password input
 func NewLoginFail() CustomError {
 	return CustomError{
-		StatusCode:   404,
+		StatusCode:   400,
 		ErrorHeader:  "Unsuccess",
 		ErrorMessage: "Username and Password is invalid",
 	}

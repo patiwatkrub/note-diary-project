@@ -1,5 +1,5 @@
 app:
-  port: 8080
+  port: 8081
   secret_api_key: secret-admin-key
   secret_jwt_key: secret-note-diary
 

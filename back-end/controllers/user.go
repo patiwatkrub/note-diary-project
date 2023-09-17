@@ -9,8 +9,38 @@ import (
 )
 
 // For fix Sonar Lint duplicating
+
+// Token parameter setting.
+
+// Set a name cookie
 var tokenKey string = "jwt-token-auth"
-var initialPath string = "/note-diary-api/"
+
+// initial domain path for set a cookie
+// with a researching found. on local domain we must except to set a domain
+var domainPath string = ""
+
+// initial path to allow on domain
+var initialPath string = "/"
+
+// Set expire cookie
+// 60 * 60 * 2,
+// First 60 is 1 minutes,
+// Next 60 is 60 minutes or 1 hours,
+// 60 * 60 = 3600 seconds,
+// PS: for set a cookie must use second unix.
+// and then for setting 2 hour with multiply 2 equal 7200,
+// so on testing we use 5 minutes and on production 2 hour,
+var expireTime = 60 * 5
+
+// set secure on cookie. PS: client must must have 'https' or 'ssl cert' for securing
+// true is secure must have https protocol,
+// false is note secure
+var isSecure = false
+
+// set cookie can access with languages such as Javascript, etc.
+// true is can not access with JS,
+// false is can access with JS
+var isHttpOnly = true
 
 var badRequestStr string = "Bad Request"
 
@@ -23,24 +53,23 @@ func NewUserAccessingController(userSRVI services.UserService) *userAccessContro
 }
 
 func (user *userAccessController) CreateUserAccount(ctx *gin.Context) {
-	var aUser services.UserResponse
-	err := ctx.ShouldBind(&aUser)
-	if err != nil {
-		ctx.JSON(400, gin.H{"error": "Status Bad Request"})
-		return
-	}
+	signInUsername := ctx.PostForm("reg-username")
+	signInPassword := ctx.PostForm("reg-password")
+	signInEmail := ctx.PostForm("reg-email")
 
-	if err := user.userSRVI.CreateUserAccount(aUser.Username, aUser.Password, aUser.Email); err != nil {
+	if err := user.userSRVI.CreateUserAccount(signInUsername, signInPassword, signInEmail); err != nil {
 		ControllerError(ctx, err)
 		return
 	}
 
 	ctx.JSON(201, gin.H{
-		aUser.Username: "created",
+		signInUsername: "created",
 	})
+
 }
 
 func (user *userAccessController) GetUser(ctx *gin.Context) {
+	logs.Info("call GetUser")
 	username := ctx.Param("username")
 
 	getUser, err := user.userSRVI.GetUser(username)
@@ -94,9 +123,19 @@ func (user *userAccessController) Login(ctx *gin.Context) {
 		return
 	}
 
-	// ctx.SetSameSite(http.SameSiteLaxMode)
+	// Guess setting for allow setCookie on front site. this is note true
+	// Let's me explain about this
+	// for allow setCookie on front-end site is depend on situation
+	// on a mode below:
+	// Lax mode - we can set cookie from different domain, port or not same origin but must GET method for receive.
+	// Strict mode - we can set cookie on only same domain or origin.
+	// None mode - is both on top but must have secure
+
+	// so in situation of mine, must not any mode.
+	// ctx.SetSameSite(http.SameSiteNoneMode)
+
 	// Set cookie is expire in 2 hour(7200) and Time Zone GMT+7(25200)
-	ctx.SetCookie(tokenKey, token, 7200+25200, initialPath, "localhost", false, true)
+	ctx.SetCookie(tokenKey, token, expireTime, initialPath, domainPath, isSecure, isHttpOnly)
 
 	if verifiedStatus == 0 {
 		ctx.JSON(200, gin.H{
@@ -117,6 +156,7 @@ func (user *userAccessController) Login(ctx *gin.Context) {
 }
 
 func (user *userAccessController) ExtendToken(ctx *gin.Context) {
+	logs.Info("call ExtendToken")
 	cookie, _ := ctx.Cookie(tokenKey)
 
 	token, _ := utility.ValidateToken(cookie)
@@ -124,15 +164,19 @@ func (user *userAccessController) ExtendToken(ctx *gin.Context) {
 	claims := token.Claims.(jwt.MapClaims)
 	claims["exp"] = utility.GenerateExpireTime()
 
-	ctx.SetCookie(tokenKey, cookie, 7200+25200, initialPath, "localhost", false, true)
+	// ctx.SetSameSite(http.SameSiteNoneMode)
+
+	ctx.SetCookie(tokenKey, cookie, expireTime, initialPath, domainPath, isSecure, isHttpOnly)
 
 	ctx.Status(200)
 }
 
 func (user *userAccessController) LogOut(ctx *gin.Context) {
+	logs.Info("call LogOut")
 	username := ctx.Param("username")
 
-	ctx.SetCookie(tokenKey, "", -1, initialPath, "localhost", false, true)
+	// ctx.SetSameSite(http.SameSiteNoneMode)
+	ctx.SetCookie(tokenKey, "", -1, initialPath, domainPath, isSecure, isHttpOnly)
 
 	ctx.JSON(200, gin.H{
 		username: "is log out",
@@ -140,6 +184,7 @@ func (user *userAccessController) LogOut(ctx *gin.Context) {
 }
 
 func (user *userAccessController) Verify(ctx *gin.Context) {
+	logs.Info("call Verify")
 	username := ctx.Param("username")
 
 	if err := user.userSRVI.Verify(username); err != nil {
@@ -278,7 +323,7 @@ func (user *userAccessController) UploadProfile(ctx *gin.Context) {
 	ctx.SaveUploadedFile(imgFile, imageName)
 
 	// rename path can relative in frontend
-	imageName = "/public/" + imgFile.Filename
+	imageName = "http://notediary:8081/public/" + imgFile.Filename
 
 	getUser, err := user.userSRVI.UploadImgProfile(getUsernameFromParameter, imageName)
 	if err != nil {
@@ -303,7 +348,7 @@ func (user *userAccessController) DeleteUser(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetCookie("jwt-token-auth", "", -1, "/note-diary-api/", "localhost", false, true)
+	ctx.SetCookie(tokenKey, "", -1, initialPath, domainPath, isSecure, isHttpOnly)
 
 	ctx.JSON(200, gin.H{
 		getUsernameFromParameter: "deleted",

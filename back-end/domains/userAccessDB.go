@@ -10,6 +10,7 @@ import (
 // For fix Sonar Lint duplicating
 var queryUsersStm string = "SELECT number, username, password, email, img_profile, confirmation, created_at, updated_at, deleted_at FROM users"
 var queryUsernameStm string = "SELECT number, username, password, email, img_profile, confirmation, created_at, updated_at, deleted_at FROM users WHERE username = ?"
+var queryValidateUserStm string = "SELECT number, username, password, email, img_profile, confirmation, created_at, updated_at, deleted_at FROM users WHERE username = ? OR email = ?"
 var queryUsernameAndPasswordStm string = "SELECT number, username, password, email, img_profile, confirmation, created_at, updated_at, deleted_at FROM users WHERE username = ? AND password = ?"
 var queryUsernameAndEmailStm string = "SELECT number, username, password, email, img_profile, confirmation, created_at, updated_at, deleted_at FROM users WHERE username = ? AND password = ?"
 
@@ -32,14 +33,14 @@ func (user *userAccessDB) Create(username, password, email string) (err error) {
 	aUser.Password = password
 	aUser.Email = email
 
-	defaultImg := "/public/profile-photo-default.png"
+	defaultImg := "http://notediary:8081/public/profile-photo-default.png"
 	defaultImgEncoder := base64.StdEncoding.EncodeToString([]byte(defaultImg))
 	aUser.Img_Profile = defaultImgEncoder
 
-	result := tx.Raw(queryUsernameStm, username).Scan(&aUser)
+	result := tx.Raw(queryValidateUserStm, username, email).Scan(&aUser)
 	if result.RowsAffected > 0 {
 		tx.Rollback()
-		return ErrUsernameIsExist
+		return ErrUsernameAndEmailIsExist
 	}
 
 	//Insert new User into database

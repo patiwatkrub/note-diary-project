@@ -41,7 +41,7 @@ func (user *userAccessService) CreateUserAccount(username, password, email strin
 	if len(username) < 6 || len(username) > 20 {
 		errS := errs.NewInvalidUsernameLength()
 		logs.Error(errS.ErrorMessage)
-		return err
+		return errS
 	}
 
 	// Encryption password
@@ -61,7 +61,7 @@ func (user *userAccessService) CreateUserAccount(username, password, email strin
 	}
 
 	if !matched {
-		errS := errs.NewInvlidEmailPattern()
+		errS := errs.NewInvalidEmailPattern()
 		logs.Error(errS.ErrorMessage)
 		return errS
 	}
@@ -333,7 +333,7 @@ func (user *userAccessService) ChangeEmail(username, password, newEmail string) 
 	}
 
 	if !matched {
-		errS := errs.NewInvlidEmailPattern()
+		errS := errs.NewInvalidEmailPattern()
 		logs.Error(errS.ErrorMessage)
 		return nil, errS
 	}
@@ -390,7 +390,7 @@ func (user *userAccessService) ChangeEmailAndPassword(username, password, newEma
 	}
 
 	if !matched {
-		errS := errs.NewInvlidEmailPattern()
+		errS := errs.NewInvalidEmailPattern()
 		logs.Error(errS.ErrorMessage)
 		return nil, errS
 	}
