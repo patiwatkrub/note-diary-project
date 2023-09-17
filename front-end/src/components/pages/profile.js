@@ -1,33 +1,22 @@
 import { uploadImgBtn, uploadImgCloseBtn, OpenUploadImgBox, CloseUploadImgBox, InitailizeUploadImgForm, UploadProfile, SelectProfile } from "../../utilities/uploadImgForm.js";
 import { UnicodeDecodeB64, b64EncodeUnicode } from "../../../src/utilities/helper/generateSecureKey.js";
-import { userData } from "../../app.js";
 import { DeleteUser, FindUserByValidation, UpdateEmail, UpdatePassword, ValidationPassword } from "../../utilities/helper/user.js";
+import { authentication, getUserData } from "../../app.js";
+import { updateUserData, clearUserData } from "../layouts/header.js";
 
 InitailizeUploadImgForm();
 
-let isLogic = localStorage.getItem('user');
-if (isLogic) {
-    let username = document.querySelector('#profile-user-box');
-    let password = document.querySelector('#user-password');
-    let email = document.querySelector('#user-email');
-    let userProfileImg = document.querySelector('#profile-img');
+authentication((isLogIn) => {
+    const authenticate = sessionStorage.getItem('issuer');
 
-    username.innerHTML = `<div>
-        <span>
-            ${userData.username}
-        </span>
-        <span class="absolute -translate-y-3">
-            <button id='delete-user-btn' class="w-6 h-6 bg-red-600 rounded-lg hover:opacity-75">
-                <img src="../src/assets/icons/icons8-delete-32.png" alt="delete-user"/>
-            </button>
-        </span>
-    </div>`;
-    password.value = userData.password;
-    email.value = userData.email;
-    userProfileImg.src = UnicodeDecodeB64(userData.imgProfile);
-} else {
-    location.href = "../../../public/homepage.html";
-}
+    if (isLogIn) {
+        getUserData(authenticate, (userResponse) => {
+            updateUserData(userResponse);
+        })
+    } else {
+        location.href = "http://notediary:8080/public/homepage.html";
+    }
+});
 
 let uploadImgForm = document.querySelector('#upload-profile');
 
@@ -136,41 +125,41 @@ function ValidationNewPassword(newPassword, confirmNewPassword) {
     return newPassword === confirmNewPassword;
 }
 
-profileForm?.addEventListener('submit', (e) => {
-    e.preventDefault();
+// profileForm?.addEventListener('submit', (e) => {
+//     e.preventDefault();
 
-    const notEmptyEmail = confirmToChangeEmailInput.value !== "";
-    const hasChangeEmail = confirmToChangeEmailInput.value !== userData.email;
+//     const notEmptyEmail = confirmToChangeEmailInput.value !== "";
+//     const hasChangeEmail = confirmToChangeEmailInput.value !== userData.email;
 
-    if (GetChangeEmailValue() && ( notEmptyEmail && hasChangeEmail)) {
-        if (ValidationPassword(userData.username, confirmToChangeEmailInput.value)) {
-            let newEmail = userEmailInput.value;
-            UpdateEmail(userData.username, newEmail);
-        }
-    }
+//     if (GetChangeEmailValue() && ( notEmptyEmail && hasChangeEmail)) {
+//         if (ValidationPassword(userData.username, confirmToChangeEmailInput.value)) {
+//             let newEmail = userEmailInput.value;
+//             UpdateEmail(userData.username, newEmail);
+//         }
+//     }
 
-    const notEmptyPassword = confirmToChangePasswordInput.value !== "";
+//     const notEmptyPassword = confirmToChangePasswordInput.value !== "";
     
-    if (GetChangePasswordValue() && notEmptyPassword) {
-        if (ValidationPassword(userData.username, confirmToChangePasswordInput.value) && 
-            ValidationNewPassword(newPasswordInput.value, confirmNewPasswordInput.value)) {
-            let newPassword = newPasswordInput.value;
-            UpdatePassword(userData.username, newPassword);
-        }
-    }
+//     if (GetChangePasswordValue() && notEmptyPassword) {
+//         if (ValidationPassword(userData.username, confirmToChangePasswordInput.value) && 
+//             ValidationNewPassword(newPasswordInput.value, confirmNewPasswordInput.value)) {
+//             let newPassword = newPasswordInput.value;
+//             UpdatePassword(userData.username, newPassword);
+//         }
+//     }
 
-    let user;
-    if (GetChangePasswordValue()) {
-        user = FindUserByValidation(userData.username.toLowerCase(), newPasswordInput.value.toLowerCase());
-    } else {
-        user = FindUserByValidation(userData.username.toLowerCase(), userData.password.toLowerCase());
-    }
+//     let user;
+//     if (GetChangePasswordValue()) {
+//         user = FindUserByValidation(userData.username.toLowerCase(), newPasswordInput.value.toLowerCase());
+//     } else {
+//         user = FindUserByValidation(userData.username.toLowerCase(), userData.password.toLowerCase());
+//     }
 
-    let userString = JSON.stringify(user);
+//     let userString = JSON.stringify(user);
 
-    localStorage.setItem('user', b64EncodeUnicode(userString));
-    location.reload()
-});
+//     localStorage.setItem('user', b64EncodeUnicode(userString));
+//     location.reload()
+// });
 
 let deleteUserBtn = document.querySelector('#delete-user-btn');
 

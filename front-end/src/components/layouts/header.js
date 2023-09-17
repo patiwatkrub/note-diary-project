@@ -1,5 +1,3 @@
-import { UnicodeDecodeB64 } from "../../utilities/helper/generateSecureKey.js";
-
 const header = document.createElement('header');
 
 header.classList.add('flex', 'flex-row', 'w-auto', 'h-[64px]', 'align-bottom', 'rounded-lg', 'bg-gainsboro', 'group');
@@ -77,18 +75,32 @@ header.innerHTML = `
 </span>
 `;
 
-function UpdateUserData(data) {
+function updateUserData(data) {
     let userDataWins = document.querySelector('#user-data-wins');
     let userDataMobile = document.querySelector('#user-data-mobile');
     let userDataImg = document.querySelector('.wins-profile-img-item');
 
-    userDataImg.src = UnicodeDecodeB64(data.imgProfile);
+    userDataImg.src = data.user.img_profile;
     userDataWins.innerHTML = 
-    `<strong>${data.username}</strong>`;
+    `<strong>${data.user.username}</strong>`;
     userDataMobile.innerHTML = 
-    `<span><strong>${data.username}</strong></span>
+    `<span><strong>${data.user.username}</strong></span>
     <br>
-    <span><strong>${data.email}</strong></span>`;
+    <span><strong>${data.user.email}</strong></span>`;
 }
 
-export { header, UpdateUserData };
+function clearUserData() {
+    let userDataWins = document.querySelector('#user-data-wins');
+    let userDataMobile = document.querySelector('#user-data-mobile');
+    let userDataImg = document.querySelector('.wins-profile-img-item');
+
+    userDataImg.src = "../../src/assets/images/profile-photo-default.png";
+    userDataWins.innerHTML = 
+    `<strong>Username</strong>`;
+    userDataMobile.innerHTML = 
+    `<span><strong>Username</strong></span>
+    <br>
+    <span><strong>Email</strong></span>`;
+}
+
+export { header, updateUserData, clearUserData };

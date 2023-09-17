@@ -1,11 +1,8 @@
 import { body } from "../../src/utilities/helper/body.js";
-import { FindUserByValidation } from './helper/user.js';
-import { alertMsg } from './helper/alertMsg.js';
 import { dropdownToggle } from './dropdownControl.js';
-import { b64EncodeUnicode, UnicodeDecodeB64, arrayBufferToBase64, base64ToArrayBuffer, encryptAES, decryptAES } from "./helper/generateSecureKey.js";
-import { secretKey } from "../app.js";
-
-let userData;
+import { InformationBox } from "../components/subcomponents/informationBox.js";
+import { loadingBox } from "../components/subcomponents/loadingBox.js";
+import { authentication, fetchUserData } from "../app.js"
 
 let username;
 let password;
@@ -37,9 +34,23 @@ function openLogInBox() {
     dropdownToggle();
 }
 
+function toggleLogInModalBox() {
+    logInBox.classList.toggle(`hidden`);
+}
+
 function closeLogInBox() {
     logInBox.classList.add('hidden');
     clearLogInForm();
+}
+
+function showLoadingBox() {
+    loadingBox.classList.remove('hidden');
+    loadingBox.classList.add('flex', 'flex-row');
+}
+
+function hideLoadingBox() {
+    loadingBox.classList.add('hidden');
+    loadingBox.classList.remove('flex', 'flex-row');
 }
 
 function clearLogInForm() {
@@ -49,66 +60,77 @@ function clearLogInForm() {
 
 function login(e) {
     e.preventDefault();
-    
-    let submitUsername = e.target.elements.username.value;
-    let submitPassword = e.target.elements.password.value;
 
-    userData = FindUserByValidation(submitUsername.toLowerCase(), submitPassword.toLowerCase());
+    const formData = new FormData(loginForm);
 
-    if (userData) {
-        // Covert object to string0
-        let userString = JSON.stringify(userData);
+    const xhr = new XMLHttpRequest();
 
-        // Encoding to secure 
-        // Use Base64
-        // Storing data to localStorage
-        localStorage.setItem('user', b64EncodeUnicode(userString));
+    const logBox = new InformationBox();
 
-        // User AES Algorithm
-        // encryptAES(userString, secretKey)
-        // .then(key => {
-        //     let encodedBase64 = arrayBufferToBase64(key);
-        //     console.log(key);
-        //     decryptAES(key, secretKey)
-        //     .then(result => {
-        //         console.log("normal");
-        //         console.log(result);
-        //         userData = JSON.parse(result);
-        //     })
-        //     .catch(error => console.log(error) );
-            
-        //     let decodedToArray = base64ToArrayBuffer(encodedBase64);
-        //     decryptAES(decodedToArray, secretKey)
-        //     .then(result => {
-        //         console.log("special");
-        //         console.log(result);
-        //         userData = JSON.parse(result);
-        //     })
-        //     .catch(error => console.log(error) );
-            
-        //     localStorage.setItem('user', encodedBase64);
-        // })
-        // .catch(error => console.log(error, "417 Expectation Failed") );
+    const setLogin = (username) => {
+        sessionStorage.setItem("issuer", username);
 
-        //Notice user
-        
-        alertMsg(`Login Successfully.`);
+        authentication((isLogIn) => {
+            if (isLogIn) {
+                fetchUserData(username);
+            }
+        });
+    };
 
-        //Reload a page
-        location.reload();
-    } else {
-        alertMsg(`Username or Password isn't exist`);
+    if (arguments.length == 3) {
+        const username = arguments[1];
+        const password = arguments[2];
+
+        formData.set("username", username);
+        formData.set("password", password);
+    } 
+
+    xhr.onreadystatechange = () => {
+        if (xhr.readyState != 4) {
+            body.classList.add('brightness-50');
+            showLoadingBox();
+            toggleLogInModalBox();
+        } else if (xhr.readyState == 4) {
+            let statusCode = xhr.status;
+            let response = xhr.response;
+
+            body.classList.remove('brightness-50');
+            hideLoadingBox();
+            toggleLogInModalBox();
+
+            let keys = Object.keys(response)
+            let info = keys[0]
+
+            switch(statusCode) {
+                case 200:
+                    logBox.createBox("warning", info, response[info]);
+                    setLogin(response.user);
+                    break;
+                case 202:
+                    logBox.createBox("success", "Success", `Welcome back, ${response.user}`);
+                    setLogin(response.user);
+                    break;
+                default:
+                    logBox.createBox("error", info, response[info]);
+                    break;
+            }
+        }
     }
+
+    xhr.onerror = () => {
+        console.log('Can not use Log in System yet.');
+    }
+
+    xhr.open("POST", "http://notediary:8081/api/user", true);
+
+    xhr.setRequestHeader('Multipart', 'multipart/form-date');
+    xhr.responseType = 'json';
+
+    xhr.withCredentials = true;
+
+    xhr.send(formData);
 
     closeLogInBox();
 }
 
-function logout(e) {
-    e.preventDefault();
-    
-    localStorage.removeItem('user');
-
-    location.reload();
-}
-
-export { logInBtn, logOutBtnWins, logOutBtnMoblie, mobileLogInBtn, logInCloseBtn, loginForm, login, logout, openLogInBox, closeLogInBox, initializeLogInForm };
+export { logInBtn, logOutBtnWins, logOutBtnMoblie, mobileLogInBtn, logInCloseBtn, loginForm, login, openLogInBox, closeLogInBox, initializeLogInForm };

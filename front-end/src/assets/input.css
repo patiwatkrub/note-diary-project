@@ -52,8 +52,8 @@
     #upload-img-box {
         @apply
         h-auto
-        py-10 
-        top-1/2 left-1/2 
+        py-10
+        top-1/2 left-1/2
         -translate-x-1/2 
         -translate-y-1/2 
         z-10 
@@ -61,6 +61,15 @@
         from-gainsboro 
         via-white 
         to-slate-300;
+    }
+
+    .set-center {
+        @apply
+        p-5 
+        top-1/2 left-1/2 
+        -translate-x-1/2 
+        -translate-y-1/2 
+        z-10 
     }
 
     /* Can not understand this line below setting for? */
@@ -179,11 +188,14 @@
         hover:bg-medium-aquamarine;
     }
 
-    .submit-btn {
+    .note-submit-btn,
+    .sign-in-submit-btn, .log-in-submit-btn,
+    .upload-submit-btn {
         @apply
-        w-full
+        w-auto
+        max-lg:w-full
         -translate-x-2
-        translate-y-2
+        translate-y-4
         text-center
         rounded-md
         bg-medium-aquamarine;
@@ -191,9 +203,10 @@
 
     .forgot-password-btn {
         @apply
-        w-full 
+        w-full
+        max-lg:w-full
         -translate-x-2
-        translate-y-2
+        translate-y-4
         text-center
         rounded-md
         text-slate-200
@@ -203,8 +216,9 @@
     .reset-btn {
         @apply
         w-full
+        max-lg:w-full
         -translate-x-2
-        translate-y-2
+        translate-y-4
         text-center
         rounded-md
         bg-yellow-200;
@@ -457,5 +471,13 @@
         rounded-lg
         opacity-90
         hover:opacity-100;
+    }
+
+    .info-stack {
+        @apply
+        fixed
+        right-3
+        bottom-4
+        text-sm
     }
 }

@@ -14,7 +14,7 @@ footer.innerHTML = `
             : <a style="color: white; text-decoration: none;" href="https://github.com/patiwatkrub/note-diary-project" target="_blank">github.com/patiwatkrub/note-diary-project</a> 
         </span><br>
         <span>
-            Tel &#9743;: <a style="color: white; text-decoration: none;" class="lining-nums" href="tel:098-2838-104">098-2838-104</a>
+            Tel &#9743;: <a style="background-color: black; color: black; text-decoration: none;" class="lining-nums selection:hidden">XXX-XXX8-104</a>
 </span>`;
 
 export { footer };

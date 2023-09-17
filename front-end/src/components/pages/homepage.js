@@ -2,8 +2,6 @@ import { linkExpandDescription, linkMinimizeDescription, expand, minimize, initi
 
 let diaryForm = document.querySelector('#diary-form');
 
-
-
 function NewDiary(e) {
     e.preventDefault()
 
@@ -20,10 +18,10 @@ function NewDiary(e) {
     console.log("diary-type:", noteType.value);
     console.log("detail:\n", detail.value);
 
-}
+} 
 
 function toggleDiaryForm() {
-    if (location.href === "http://127.0.0.1:5500/public/profile.html") {
+    if (location.href === "http://notediary:8080/public/profile.html") {
         return
     }
 

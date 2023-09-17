@@ -16,8 +16,8 @@ uploadImgModalBox.innerHTML = `
         <label for="upload-img">Upload: </label>
         <input class="" type="file" name="upload-img" id="upload-img">
     </div>
-    <div class="md:-translate-y-5">
-        <button class="submit-btn" type="submit">Submit</button>
+    <div class="-translate-y-5">
+        <button class="upload-submit-btn" type="submit">Submit</button>
     </div>
 </form>
 `;

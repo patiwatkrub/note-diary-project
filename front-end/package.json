@@ -7,6 +7,6 @@
     "tailwindcss-build": "npx tailwindcss -i ./src/assets/input.css -o ./src/assets/output.css --watch"
   },
   "dependencies": {
-    "crypto-js": "^4.1.1"
+    "@tailwindcss/container-queries": "^0.1.1"
   }
 }

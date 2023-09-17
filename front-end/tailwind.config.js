@@ -21,7 +21,18 @@ module.exports = {
         checkmark_gif: 'url("/src/assets/icons/checkmark-resize.gif")',
         uncheckmark_gif : 'url("/src/assets/icons/uncheckmark.png")',
       },
+      keyframes: {
+        fadePulse: {
+          '0%': { opacity: 1 },
+          '25%': { opacity: 0.5 },
+          '50%': { opacity: 1 },
+          '75%': { opacity: 0.5 },
+          '100%': { opacity: 1 },
+        },
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/container-queries'),
+  ],
 }
