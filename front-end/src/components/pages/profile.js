@@ -3,6 +3,7 @@ import { UnicodeDecodeB64, b64EncodeUnicode } from "../../../src/utilities/helpe
 import { DeleteUser, FindUserByValidation, UpdateEmail, UpdatePassword, ValidationPassword } from "../../utilities/helper/user.js";
 import { authentication, getUserData } from "../../app.js";
 import { updateUserData, clearUserData } from "../layouts/header.js";
+import { profileSubmitter } from "../../utilities/profileSubmitter.js";
 
 InitailizeUploadImgForm();
 
@@ -36,16 +37,16 @@ editEmailBtn?.addEventListener('click', () => {
     editEmailBtn.classList.add('hidden');
     cancelEmailBtn.classList.remove('hidden');
     confirmPasswordToChangeEmailBox.classList.remove('hidden');
-
-    ToggleChangeEmail();
+    profileSubmitter.enableChangeEmail();
+    // ToggleChangeEmail();
 });
 
 cancelEmailBtn?.addEventListener('click', () => {
     cancelEmailBtn.classList.add('hidden');
     editEmailBtn.classList.remove('hidden');
     confirmPasswordToChangeEmailBox.classList.add('hidden');
-
-    ToggleChangeEmail();
+    profileSubmitter.disableChangeEmail();
+    // ToggleChangeEmail();
 });
 
 let inputPasswordBox = document.querySelector('#user-password-box');
@@ -58,16 +59,16 @@ editPasswordBtn?.addEventListener('click', () => {
     inputPasswordBox.classList.add('hidden');
     inputConfirmPasswordBox.classList.remove('hidden');
     confirmPasswordBox.classList.replace('hidden', 'flex');
-
-    ToggleChangePassword();
+    profileSubmitter.enableChangePassword();
+    // ToggleChangePassword();
 });
 
 cancelPasswordBtn.addEventListener('click', () => {
     inputPasswordBox.classList.remove('hidden');
     inputConfirmPasswordBox.classList.add('hidden');
     confirmPasswordBox.classList.replace('flex', 'hidden');
-
-    ToggleChangePassword();
+    profileSubmitter.disableChangePassword();
+    // ToggleChangePassword();
 });
 
 let profileForm = document.querySelector('.profile-setting-form');
@@ -127,41 +128,45 @@ function ValidationNewPassword(newPassword, confirmNewPassword) {
     return newPassword === confirmNewPassword;
 }
 
-// profileForm?.addEventListener('submit', (e) => {
-//     e.preventDefault();
+profileForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
 
-//     const notEmptyEmail = confirmToChangeEmailInput.value !== "";
-//     const hasChangeEmail = confirmToChangeEmailInput.value !== userData.email;
+    const authenticate = sessionStorage.getItem('issuer');
+    const prepURL = profileSubmitter.submit(authenticate);
 
-//     if (GetChangeEmailValue() && ( notEmptyEmail && hasChangeEmail)) {
-//         if (ValidationPassword(userData.username, confirmToChangeEmailInput.value)) {
-//             let newEmail = userEmailInput.value;
-//             UpdateEmail(userData.username, newEmail);
-//         }
-//     }
+    console.log(prepURL);
+    // const notEmptyEmail = confirmToChangeEmailInput.value !== "";
+    // const hasChangeEmail = confirmToChangeEmailInput.value !== userData.email;
 
-//     const notEmptyPassword = confirmToChangePasswordInput.value !== "";
+    // if (GetChangeEmailValue() && ( notEmptyEmail && hasChangeEmail)) {
+    //     if (ValidationPassword(userData.username, confirmToChangeEmailInput.value)) {
+    //         let newEmail = userEmailInput.value;
+    //         UpdateEmail(userData.username, newEmail);
+    //     }
+    // }
+
+    // const notEmptyPassword = confirmToChangePasswordInput.value !== "";
     
-//     if (GetChangePasswordValue() && notEmptyPassword) {
-//         if (ValidationPassword(userData.username, confirmToChangePasswordInput.value) && 
-//             ValidationNewPassword(newPasswordInput.value, confirmNewPasswordInput.value)) {
-//             let newPassword = newPasswordInput.value;
-//             UpdatePassword(userData.username, newPassword);
-//         }
-//     }
+    // if (GetChangePasswordValue() && notEmptyPassword) {
+    //     if (ValidationPassword(userData.username, confirmToChangePasswordInput.value) && 
+    //         ValidationNewPassword(newPasswordInput.value, confirmNewPasswordInput.value)) {
+    //         let newPassword = newPasswordInput.value;
+    //         UpdatePassword(userData.username, newPassword);
+    //     }
+    // }
 
-//     let user;
-//     if (GetChangePasswordValue()) {
-//         user = FindUserByValidation(userData.username.toLowerCase(), newPasswordInput.value.toLowerCase());
-//     } else {
-//         user = FindUserByValidation(userData.username.toLowerCase(), userData.password.toLowerCase());
-//     }
+    // let user;
+    // if (GetChangePasswordValue()) {
+    //     user = FindUserByValidation(userData.username.toLowerCase(), newPasswordInput.value.toLowerCase());
+    // } else {
+    //     user = FindUserByValidation(userData.username.toLowerCase(), userData.password.toLowerCase());
+    // }
 
-//     let userString = JSON.stringify(user);
+    // let userString = JSON.stringify(user);
 
-//     localStorage.setItem('user', b64EncodeUnicode(userString));
-//     location.reload()
-// });
+    // localStorage.setItem('user', b64EncodeUnicode(userString));
+    // location.reload()
+});
 
 let deleteUserBtn = document.querySelector('#delete-user-btn');
 
