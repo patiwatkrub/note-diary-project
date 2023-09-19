@@ -16,6 +16,8 @@ authentication((isLogIn) => {
     } else {
         location.href = "http://notediary:8080/public/homepage.html";
     }
+
+
 });
 
 let uploadImgForm = document.querySelector('#upload-profile');
