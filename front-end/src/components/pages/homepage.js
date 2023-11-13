@@ -19,10 +19,9 @@ function NewDiary(e) {
     console.log("detail:\n", detail.value);
 
 } 
-
 function toggleDiaryForm() {
     if (location.href === "http://notediary:8080/public/profile.html") {
-        return
+        return;
     }
 
     let diaryForm = document.querySelector('#diary-form');

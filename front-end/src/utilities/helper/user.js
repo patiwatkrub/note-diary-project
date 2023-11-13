@@ -1,161 +1,226 @@
-import { b64EncodeUnicode } from "../../utilities/helper/generateSecureKey.js";
+class User {
 
-/* ท่านี้ใช้ไม่ได้ เพราะว่าค่าในอาเรย์ทั้งหมดจะถูกเปลี่ยนให้เหมือนกันทั้งหมด เมื่อมีค่าใหม่เข้ามา
-const User = (function() {
-    let username;
-    let password;
-    let email;
-    let imgProfile;
-
-    class User {
-        constructor(username, password, email, imgProfile) {
-            username = username;
-            password = password;
-            email = email;
-            imgProfile = imgProfile;
-        }
-
-        getUsername() {
-            return username;
-        }
+    #username = '';
+    #password = '';
+    #email = ''; 
+    #imgProfile = '';
+    // Must be less than actual time out 
+    // ex: actual time out is 5 mins 
+    // it's should be 4 mins or more than and less than 5 mins to set time out
+    // 5 mins => 4 mins 30 sec
+    #timeout = (60 * 4 * 1000) + (30 * 1000);
     
-        _getPassword() {
-            return password;
-        }
-
-        getEmail() {
-            return email;
-        }
+    logInEvent = {
+        events : [],
+        addLogInEvent : function(event) {
+            this.events.push(event);
+        },
     
-        getImgProfile() {
-            return imgProfile;
+        showLogInEvent : function() {
+            console.log(this.events);
+        },
+
+        call : function() {
+            if (this.events.length <= 0) return;
+
+            this.events.forEach((event) => {
+                event();
+            })
+        },
+    
+        removeLogInEvent : function(event) {
+            return this.events.filter((e) => event != e);
+        }
+    }
+
+    logOutEvent = {
+        events : [],
+        addLogOutEvent : function(event) {
+            this.events.push(event);
+        },
+    
+        showLogOutEvent : function() {
+            console.log(this.events);
+        },
+
+        call : function() {
+            if (this.events.length <= 0) return;
+
+            this.events.forEach((event) => {
+                event();
+            })
+        },
+    
+        removeLogOutEvent : function(event) {
+            return this.events.filter((e) => event != e);
+        }
+    }
+
+    authentication = {
+        issuer : function() {
+            let userStr = sessionStorage.getItem("user");
+            let user = JSON.parse(userStr);
+            if (user) {
+                return user.issuer
+            }
+
+            return null;
+        },
+        signedTime : 0,
+        setTimeout : function(time) {
+            if (this.signedTime == 0) {
+                this.signedTime = Date.now() + time;
+            }
+        },
+        getTimeout : function() {
+            let userStr = sessionStorage.getItem("user");
+            let user = JSON.parse(userStr);
+            if (user) {
+                this.signedTime = user.expire;
+            }
+            return this.signedTime;
+        },
+        isLogIn : function() {
+            const login = this.issuer() != null;
+            return login;
+        },
+    }
+
+    set username(newUsername) {
+        this.#username = newUsername;
+    }
+
+    set password(newPassword) {
+        this.#password = newPassword;
+    }
+
+    set email(newEmail) {
+        this.#email = newEmail;
+    }
+
+    set imgProfile(newImgProfile) {
+        this.#imgProfile = newImgProfile;
+    }
+
+    setTimeout(timestamp) {
+        this.#timeout = timestamp;
+    }
+
+    get username() {
+        return `${this.#username}`;
+    }
+
+    get password() {
+        return `${this.#password}`;
+    }
+
+    get email() {
+        return `${this.#email}`;
+    }
+
+    get imgProfile() {
+        return `${this.#imgProfile}`;
+    }
+
+    getTimeout() {
+        return this.#timeout;
+    }
+
+    login(username, password) {
+        
+        this.#username = username;
+        this.#password = password;
+
+        // Set time out
+        this.authentication.setTimeout(this.#timeout);
+        
+        let data = {
+            issuer : this.#username,
+            expire : this.authentication.getTimeout(),
         }
 
-        getUser() {
-            return {
-                username : this.getUsername(),
-                password : this._getPassword(),
-                email : this.getEmail(),
-                imgProfile : this.getImgProfile(),
+        let user = JSON.stringify(data);
+
+        sessionStorage.setItem("user", user);
+    }
+
+    extendTime() {
+
+        // Reset user session
+        console.log("user's extend");
+        
+        this.authentication.signedTime = 0;
+        this.authentication.setTimeout(this.#timeout);
+
+        let data = {
+            issuer : this.#username,
+            expire : this.authentication.signedTime,
+        }
+
+        let user = JSON.stringify(data);
+
+        sessionStorage.removeItem("user")
+        sessionStorage.setItem("user", user);
+    }
+
+    logout() {
+        this.#username = '';
+        this.#password = '';
+        this.#email = '';
+        this.#imgProfile = '';
+
+        this.authentication.signedTime = 0;
+
+        sessionStorage.removeItem('user');
+        sessionStorage.removeItem('userData');
+    }
+
+    setResponseData(userData) {
+        this.#username = userData.user.username;
+        this.#password = userData.user.password;
+        this.#email = userData.user.email;
+        this.#imgProfile = userData.user.img_profile;
+
+        let data = {
+            user : {
+                username : this.#username,
+                password : this.#password,
+                email : this.#email,
+                img_profile : this.#imgProfile
             }
         }
+
+        let dataStr = JSON.stringify(data);
+
+        sessionStorage.setItem("userData", dataStr);
     }
 
-    return User;
-})();*/
-
-class User {
-    constructor(username, password, email, imgProfile) {
-        this._usersname = username;
-        this._password = password;
-        this._email = email;
-        this._imgProfile = imgProfile;
-    }
-
-    setUsername(newUsername) {
-        this._usersname = newUsername;
-    }
-
-    setPassword(newPassword) {
-        this._password = newPassword;
-    }
-
-    setEmail(newEmail) {
-        this._email = newEmail;
-    }
-
-    setImgProfile(newImgProfile) {
-        this._imgProfile = b64EncodeUnicode(newImgProfile);
-    }
-
-    getUsername() {
-        return this._usersname;
-    }
-
-    getPassword() {
-        return this._password;
-    }
-
-    getEmail() {
-        return this._email;
-    }
-
-    getImgProfile() {
-        return this._imgProfile;
-    }
-
-    getUser() {
-        return {
-            username : this.getUsername(),
-            password : this.getPassword(),
-            email : this.getEmail(),
-            imgProfile : this.getImgProfile(),
-        };
+    getUserObject() {
+        let userDataStr = sessionStorage.getItem("userData");
+        
+        let userData = JSON.parse(userDataStr);
+        return userData;
     }
 }
 
-let _users = [];
+const userSingleton = (function() {
 
-const _dumpUserA = new User("ABCD", "123456789", "ABCD@hotmail.com", b64EncodeUnicode("https://images.freeimages.com/images/large-previews/ab1/butterfly-1615851.jpg"));
-const _dumpUserB = new User("EFGH", "12345678", "EFGH@hotmail.com", b64EncodeUnicode("https://images.freeimages.com/images/large-previews/ab1/butterfly-1615851.jpg"));
-const _dumpUserC = new User("IJKL", "1234567", "IJKL@hotmail.com", b64EncodeUnicode("https://images.freeimages.com/images/large-previews/ab1/butterfly-1615851.jpg"));
-const _dumpUserD = new User("MNOP", "123456", "MNOP@hotmail.com", b64EncodeUnicode("https://images.freeimages.com/images/large-previews/ab1/butterfly-1615851.jpg"));
-const _dumpUserE = new User("QRST", "12345", "QRST@hotmail.com", b64EncodeUnicode("https://images.freeimages.com/images/large-previews/ab1/butterfly-1615851.jpg"));
+    let userSlot;
 
-AddUser(_dumpUserA);
-AddUser(_dumpUserB);
-AddUser(_dumpUserC);
-AddUser(_dumpUserD);
-AddUser(_dumpUserE);
+    function addUser() {
+        userSlot = new User();
+        return userSlot;
+    }
 
-function AddUser(newUser) {
-    _users.push(newUser);
-}
+    return {
+        getInstead : function() {
+            if (!userSlot) {
+                userSlot = addUser();
+            }
 
-function FindUserByValidation(username, password) {
-    let data;
-    _users.forEach((user) => {
-        if (username === user.getUsername().toLowerCase() && password === user.getPassword().toLowerCase()) {
-            data = user.getUser();
+            return userSlot;
         }
-    });
+    }
+})()
 
-    return data;
-}
-
-function UpdateEmail(username, newEmail) {
-    _users.map((user) => {
-        if (user.getUsername().toLowerCase() === username.toLowerCase()) {
-            user.setEmail(newEmail);
-            return user;
-        }
-    });
-
-}
-
-function UpdatePassword(username, newPassword) {
-    _users.map((user) => {
-        if (user.getUsername().toLowerCase() === username.toLowerCase()) {
-            user.setPassword(newPassword);
-            return user;
-        }
-    });
-}
-
-function ValidationPassword(username, password) {
-    let validate = false;
-    _users.forEach((item) => {
-        if (item.getUsername().toLowerCase() === username.toLowerCase() &&
-            item.getPassword().toLowerCase() === password.toLowerCase()) {
-            validate = true;
-        }
-    });
-
-    return validate;
-} 
-
-function DeleteUser(userData) {
-    _users = _users.filter(data => data.getUsername().toLowerCase() !== userData.username.toLowerCase());
-}
-
-export {  User, AddUser, FindUserByValidation, UpdateEmail, UpdatePassword, ValidationPassword, DeleteUser };
+export { userSingleton };

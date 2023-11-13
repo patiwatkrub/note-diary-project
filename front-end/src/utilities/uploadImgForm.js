@@ -1,12 +1,10 @@
 import { body } from "../../src/utilities/helper/body.js";
 
-let selected;
+let imgFile = body.querySelector('#upload-img');
 
-let imgFile;
-
-let uploadImgBox;
-let uploadImgBtn;
-let uploadImgCloseBtn;
+let uploadImgBox = body.querySelector('#upload-img-box');
+let uploadImgBtn = body.querySelector('#upload-profile-img');
+let uploadImgCloseBtn = body.querySelector('#upload-img-close-btn');
 
 function InitailizeUploadImgForm() {
     imgFile = body.querySelector('#upload-img');
@@ -24,23 +22,8 @@ function CloseUploadImgBox() {
     clearUploadImgForm();
 }
 
-function SelectProfile(e) {
-    if (e.target.files[0]) {
-        selected = e.target.files[0].name;
-    }
-}
-
-function UploadProfile(e) {
-    e.preventDefault();
-    
-    console.log(selected);
-    console.log("Upload success...");
-
-    // location.reload();
-}
-
 function clearUploadImgForm() {
     imgFile.value = '';
 }
 
-export { uploadImgBtn, uploadImgCloseBtn, OpenUploadImgBox, CloseUploadImgBox, SelectProfile, UploadProfile, InitailizeUploadImgForm };
+export { uploadImgBtn, uploadImgCloseBtn, OpenUploadImgBox, CloseUploadImgBox, InitailizeUploadImgForm };

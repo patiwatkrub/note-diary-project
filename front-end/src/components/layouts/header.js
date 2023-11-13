@@ -75,11 +75,18 @@ header.innerHTML = `
 </span>
 `;
 
-function updateUserData(data) {
+const onLogIn = function() {
+    header.classList.add('is-login');
+}
+
+const onLogOut = function() {
+    header.classList.remove('is-login');
+}
+
+const updateUserData = function(data) {
     let userDataWins = document.querySelector('#user-data-wins');
     let userDataMobile = document.querySelector('#user-data-mobile');
     let userDataImg = document.querySelector('.wins-profile-img-item');
-
     userDataImg.src = data.user.img_profile;
     userDataWins.innerHTML = 
     `<strong>${data.user.username}</strong>`;
@@ -89,7 +96,7 @@ function updateUserData(data) {
     <span><strong>${data.user.email}</strong></span>`;
 }
 
-function clearUserData() {
+const clearUserData = function() {
     let userDataWins = document.querySelector('#user-data-wins');
     let userDataMobile = document.querySelector('#user-data-mobile');
     let userDataImg = document.querySelector('.wins-profile-img-item');
@@ -103,4 +110,4 @@ function clearUserData() {
     <span><strong>Email</strong></span>`;
 }
 
-export { header, updateUserData, clearUserData };
+export { header, updateUserData, clearUserData, onLogIn, onLogOut };
