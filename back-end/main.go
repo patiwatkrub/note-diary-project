@@ -38,19 +38,19 @@ func main() {
 
 	router.Use(middleware.CORSSetUp())
 
-	// localhost:8080/note-diary-api
+	// localhost:8080/note-diary-api -> notediary:8081/api
 	api := router.Group("/api")
 
 	router.GET("/", func(c *gin.Context) {
 		c.String(200, "Server is running on port %v", viper.GetInt("app.port"))
 	})
 
-	// localhost:8080/note-diary-api/admin
+	// localhost:8080/note-diary-api/admin -> notediary:8081/api/admin
 	admin := api.Group("/admin", middleware.RoleAdmin)
 	admin.GET("/users", userAccessController.GetUsers)
 	admin.GET("/users-deleted", userAccessController.GetDeletedUsers)
 
-	// localhost:8080/note-diary-api/user
+	// localhost:8080/note-diary-api/user -> notediary:8081/api/user
 	user := api.Group("/user")
 	user.POST("/create", userAccessController.CreateUserAccount)
 
@@ -59,7 +59,7 @@ func main() {
 
 	user.POST("", userAccessController.Login)
 
-	// localhost:8080/note-diary-api/user/:username
+	// localhost:8080/note-diary-api/user/:username -> notediary:8081/api/user/:username
 	authorization := user.Group("/:username", middleware.Authorization())
 	authorization.GET("/", userAccessController.ExtendToken)
 	authorization.GET("/logout", userAccessController.LogOut)
@@ -72,7 +72,7 @@ func main() {
 	authorization.DELETE("/delete", userAccessController.DeleteUser)
 
 	// Access note diary
-	// localhost:8080/note-diary-api/user/:username/note
+	// localhost:8080/note-diary-api/user/:username/note -> notediary:8081/api/user/:username/note
 	noteDiary := authorization.Group("/note")
 	noteDiary.POST("/create", noteAccessController.MakeNote)
 	noteDiary.GET("/", noteAccessController.ShowNotes)

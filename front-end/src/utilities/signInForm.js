@@ -1,8 +1,5 @@
 import { body } from "./helper/body.js";
 import { dropdownToggle } from "./dropdownControl.js";
-import { InformationBox } from "../components/subcomponents/informationBox.js";
-import { loadingBox } from "../components/subcomponents/loadingBox.js";
-import { login } from "./logInForm.js";
 
 let regUsername;
 let regPassword;
@@ -29,8 +26,6 @@ function initailizeSignInForm() {
     signInBtn = body.querySelector('#sign-in-btn');
     mobileSignInBtn = body.querySelector('#mobile-sign-in-btn');
     signInCloseBtn = body.querySelector('#sign-in-close-btn');
-
-    body.appendChild(loadingBox);
 }
 
 function openSignInBox() {
@@ -47,72 +42,8 @@ function closeSignInBox() {
     clearSignInForm();
 }
 
-function showLoadingBox() {
-    loadingBox.classList.remove('hidden');
-    loadingBox.classList.add('flex', 'flex-row');
-}
-
-function hideLoadingBox() {
-    loadingBox.classList.add('hidden');
-    loadingBox.classList.remove('flex', 'flex-row');
-}
-
 function clearSignInForm() {
     resetBtn.click();
 }
 
-function signIn(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(signInForm);
-    
-    const xhr = new XMLHttpRequest();
-
-    const logBox = new InformationBox();
-    
-    xhr.onreadystatechange = () => {
-        if (xhr.readyState != 4) {
-            
-            body.classList.add('brightness-50');
-            
-            showLoadingBox();
-            toggleSignInModalBox();
-
-        } else if (xhr.readyState == 4) {
-            let statusCode = xhr.status;
-
-            if (statusCode == 201) {
-                const username = formData.get("reg-username");
-                const password = formData.get("reg-password");
-
-                // Force log in.
-                login(e, username, password);
-            } else {
-                let response = xhr.response;
-                let keys = Object.keys(response)
-                let info = keys[0]
-                logBox.createBox("error", info, response[info])
-            }
-            
-
-            body.classList.remove('brightness-50');
-            hideLoadingBox();
-            toggleSignInModalBox();
-        }
-    }
-
-    xhr.onerror = () => {
-        console.log('Request failed. Network error.');
-    }
-
-    // Fact: It is not setRequestHeader. the server is smart enough to specify request.
-    xhr.open("POST", "http://notediary:8081/api/user/create", true);
-    // Fact: FormData is not supported on `Content-Type`, `application/x-www-form-urlencoded`
-    // xhr.setRequestHeader(`Content-Type`, `application/x-www-form-urlencoded`)
-    xhr.setRequestHeader(`Multipart`, `multipart/form-data`);
-    xhr.responseType = 'json';
-    
-    xhr.send(formData);
-}
-
-export { signInBtn, mobileSignInBtn, signInCloseBtn, signInForm, signIn, openSignInBox, closeSignInBox, initailizeSignInForm };
+export { signInBtn, mobileSignInBtn, signInCloseBtn, signInForm, openSignInBox, toggleSignInModalBox, closeSignInBox, initailizeSignInForm };

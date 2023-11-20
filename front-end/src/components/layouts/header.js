@@ -75,21 +75,33 @@ header.innerHTML = `
 </span>
 `;
 
-function updateUserData(data) {
+const onLogIn = function() {
+    header.classList.add('is-login');
+}
+
+const onLogOut = function() {
+    header.classList.remove('is-login');
+}
+
+const updateUserData = function(data) {
     let userDataWins = document.querySelector('#user-data-wins');
     let userDataMobile = document.querySelector('#user-data-mobile');
     let userDataImg = document.querySelector('.wins-profile-img-item');
 
-    userDataImg.src = data.user.img_profile;
+    let username = data.user ? data.user.username : data.success.username;
+    let email = data.user ? data.user.email : data.success.email;
+    let img_profile = data.user ? data.user.img_profile : data.success.img_profile;
+
+    userDataImg.src = img_profile;
     userDataWins.innerHTML = 
-    `<strong>${data.user.username}</strong>`;
+    `<strong>${username}</strong>`;
     userDataMobile.innerHTML = 
-    `<span><strong>${data.user.username}</strong></span>
+    `<span><strong>${username}</strong></span>
     <br>
-    <span><strong>${data.user.email}</strong></span>`;
+    <span><strong>${email}</strong></span>`;
 }
 
-function clearUserData() {
+const clearUserData = function() {
     let userDataWins = document.querySelector('#user-data-wins');
     let userDataMobile = document.querySelector('#user-data-mobile');
     let userDataImg = document.querySelector('.wins-profile-img-item');
@@ -103,4 +115,4 @@ function clearUserData() {
     <span><strong>Email</strong></span>`;
 }
 
-export { header, updateUserData, clearUserData };
+export { header, updateUserData, clearUserData, onLogIn, onLogOut };

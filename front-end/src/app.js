@@ -1,19 +1,22 @@
 import { body } from "./utilities/helper/body.js"
-import { updateUserData, clearUserData, header } from "./components/layouts/header.js";
+import { updateUserData, clearUserData, header, onLogIn, onLogOut } from "./components/layouts/header.js";
 import { footer } from "./components/layouts/footer.js";
 import { signInModalBox } from "./components/subcomponents/signInModalBox.js";
 import { logInModalBox } from "./components/subcomponents/logInModalBox.js";
 import { uploadImgModalBox } from "./components/subcomponents/uploadImgModalBox.js";
 import { dropdownBtn, dropdownToggle, initializeDropdownControl } from "./utilities/dropdownControl.js";
-import { logInBtn, mobileLogInBtn, logInCloseBtn, loginForm, login, openLogInBox, closeLogInBox, initializeLogInForm, logOutBtnWins, logOutBtnMoblie } from "./utilities/logInForm.js";
-import { signInBtn, mobileSignInBtn, signInCloseBtn, signInForm, signIn,  openSignInBox, closeSignInBox,initailizeSignInForm } from "./utilities/signInForm.js";
+import { logInBtn, mobileLogInBtn, logInCloseBtn, loginForm, openLogInBox, closeLogInBox, initializeLogInForm, logOutBtnWins, logOutBtnMoblie } from "./utilities/logInForm.js";
+import { signInBtn, mobileSignInBtn, signInCloseBtn, signInForm, openSignInBox, closeSignInBox,initailizeSignInForm } from "./utilities/signInForm.js";
+import { signIn, login, getUserData, getNoteData, extendTime, logout } from "./utilities/helper/apiFetcher.js";
 import { NewDiary, diaryForm, toggleDiaryForm } from "./components/pages/homepage.js";
-import { InformationBox } from "./components/subcomponents/informationBox.js";
+import { loadingBox } from "./components/subcomponents/loadingBox.js";
+import { userSingleton } from "./utilities/helper/user.js";
 
 body.insertBefore(header, body.firstChild);
 body.appendChild(signInModalBox);
 body.appendChild(logInModalBox);
 body.appendChild(uploadImgModalBox);
+body.appendChild(loadingBox);
 body.insertBefore(footer, body.children[body.children.length]);
 
 // Initialize element
@@ -38,122 +41,78 @@ signInCloseBtn?.addEventListener('click', closeSignInBox);
 
 diaryForm?.addEventListener('submit', NewDiary);
 
-const authentication = (callback) => {
-    const authenticate = sessionStorage.getItem('issuer');
+const user = userSingleton.getInstead();
 
-    let logic = false;
+// Set up Log in events
+user.logInEvent.addLogInEvent(onLogIn);
+user.logInEvent.addLogInEvent(toggleDiaryForm);
 
-    if (authenticate) {
-        header.classList.add('is-login');
+// Set up Log out events
+user.logOutEvent.addLogOutEvent(onLogOut);
+user.logOutEvent.addLogOutEvent(clearUserData);
 
-        logic = true;
-        callback(logic);
-    } else {
-        header.classList.remove('is-login');
-        clearUserData();
-        callback(logic);
-    }
-}
+async function plugin() {
+    // 1
+    // if (sessionStorage.getItem("userData") == null) {
+    //     getUserData(user.authentication.issuer(), (response) => {
+    //         user.setResponseData(response.user.username, response.user.password, response.user.email, response.user.img_profile);
+    //         updateUserData(response);
 
-authentication((isLogIn) => {
-    const authenticate = sessionStorage.getItem('issuer');
+    //     });
+    // } else {
+    //     const userData = user.getUserObject();
+    //     if (userData) {
+    //         updateUserData(userData);
+    //     }
+
+    // }
     
-    if (isLogIn) {
-        fetchUserData(authenticate);
-        
-        if (location.href == "http://notediary:8080/public/profile.html") return
+    // user.logInEvent.call();
 
-        getNoteData(authenticate, (noteData) => {
-            console.log(noteData);
-        })
-    }
-})
+    // 2 (best performance i thing)
+    let userData;
 
-function fetchUserData(issuer) {
-    getUserData(issuer, (userResponse) => {
-        updateUserData(userResponse);
-
-        toggleDiaryForm();
-    })
-}
-
-function getUserData(issuer, callback) {
-
-    const xhr = new XMLHttpRequest;
-    const logBox = new InformationBox();
-    xhr.onreadystatechange = () => {
-        if (xhr.readyState == 4) {
-            let statusCode = xhr.status;
-            let response = xhr.response;
-            let keys = Object.keys(response);
-
-            let info = keys[0];
-            if (statusCode !== 200) {
-                logBox.createBox("error", info, response[info])
-            } else if (statusCode === 200) {
-                callback(response);
-            }
+    try {
+        if (sessionStorage.getItem("userData") == null) {
+            userData = await getUserData(user.authentication.issuer());
+            user.setResponseData(userData);
+        } else {
+            userData = user.getUserObject();
         }
-    }
 
-    xhr.onerror = () => {
-        console.log("something went wrong");
-    }
-
-    xhr.open("GET", `http://notediary:8081/api/user/${issuer}`, true);
-    xhr.responseType = "json";
-
-    xhr.send();
-}
-
-function getNoteData(issuer, callback){
-    const xhr = new XMLHttpRequest;
-
-    xhr.onload = () => {
-        const statusCode = xhr.status;
-        const response = xhr.response;
-
-        if (statusCode == 200) {
-            callback(response);
+        if (userData) {
+            updateUserData(userData);
+            user.logInEvent.call();
         }
+    } catch (err) {
+        console.log(err);
     }
-
-    xhr.onerror = () => {
-        console.log("can't get note data");
-    }
-
-    xhr.open("GET", `http://notediary:8081/api/user/${issuer}/note/`, true);
-    xhr.withCredentials = true;
-    xhr.responseType = "json";
-
-    xhr.send()
-}
-
-function logout(e) {
-    e.preventDefault();
     
-    const xhr = new XMLHttpRequest();
-
-    const issuer = sessionStorage.getItem("issuer")
-
-    xhr.onreadystatechange = () => {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            sessionStorage.removeItem('issuer');
-
-            header.classList.remove('is-login');
-
-            location = "http://notediary:8080/public/homepage.html"
-        }
-    }
-
-    xhr.onerror = () => {
-        console.log("something went wrong");
-    }
-
-    xhr.open("GET", `http://notediary:8081/api/user/${issuer}/logout`, true);
-
-    xhr.withCredentials = true;
-    xhr.send();
 }
 
-export { authentication, fetchUserData, getUserData };
+function plugout() {
+    user.logOutEvent.call();
+
+    user.logout();
+}
+
+function timeoutChecker() {
+    let now = Date.now();
+    let expire = user.authentication.getTimeout();
+    if ( (now > expire) && (now <= expire + (30 * 1000)) ) {
+        extendTime();
+    }
+    else if ( (now > expire + (30 * 1000)) ){
+        user.logout();
+    }
+}
+
+if (user.authentication.isLogIn()) {
+    timeoutChecker();
+    
+    plugin();
+} else {
+    plugout();
+}
+
+export { plugin };

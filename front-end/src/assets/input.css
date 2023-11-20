@@ -151,6 +151,7 @@
 
     .wins-profile-img-item {
         @apply
+        object-cover
         row-span-3 col-span-1
         box-content
         mr-2
