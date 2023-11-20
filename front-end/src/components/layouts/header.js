@@ -87,13 +87,18 @@ const updateUserData = function(data) {
     let userDataWins = document.querySelector('#user-data-wins');
     let userDataMobile = document.querySelector('#user-data-mobile');
     let userDataImg = document.querySelector('.wins-profile-img-item');
-    userDataImg.src = data.user.img_profile;
+
+    let username = data.user ? data.user.username : data.success.username;
+    let email = data.user ? data.user.email : data.success.email;
+    let img_profile = data.user ? data.user.img_profile : data.success.img_profile;
+
+    userDataImg.src = img_profile;
     userDataWins.innerHTML = 
-    `<strong>${data.user.username}</strong>`;
+    `<strong>${username}</strong>`;
     userDataMobile.innerHTML = 
-    `<span><strong>${data.user.username}</strong></span>
+    `<span><strong>${username}</strong></span>
     <br>
-    <span><strong>${data.user.email}</strong></span>`;
+    <span><strong>${email}</strong></span>`;
 }
 
 const clearUserData = function() {

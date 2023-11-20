@@ -4,6 +4,7 @@ class User {
     #password = '';
     #email = ''; 
     #imgProfile = '';
+    #confirmation = 0;
     // Must be less than actual time out 
     // ex: actual time out is 5 mins 
     // it's should be 4 mins or more than and less than 5 mins to set time out
@@ -102,6 +103,10 @@ class User {
         this.#imgProfile = newImgProfile;
     }
 
+    set confirmation(confirm) {
+        this.#confirmation = confirm;
+    }
+
     setTimeout(timestamp) {
         this.#timeout = timestamp;
     }
@@ -120,6 +125,10 @@ class User {
 
     get imgProfile() {
         return `${this.#imgProfile}`;
+    }
+
+    get confirmation() {
+        return this.#confirmation;
     }
 
     getTimeout() {
@@ -153,7 +162,7 @@ class User {
         this.authentication.setTimeout(this.#timeout);
 
         let data = {
-            issuer : this.#username,
+            issuer : this.authentication.issuer(),
             expire : this.authentication.signedTime,
         }
 
@@ -176,10 +185,12 @@ class User {
     }
 
     setResponseData(userData) {
-        this.#username = userData.user.username;
-        this.#password = userData.user.password;
-        this.#email = userData.user.email;
-        this.#imgProfile = userData.user.img_profile;
+        this.#username = userData.user ? userData.user.username : userData.success.username;
+        this.#password = userData.user ? userData.user.password : userData.success.password;
+        this.#email = userData.user ? userData.user.email : userData.success.email;
+        this.#imgProfile = userData.user ? userData.user.img_profile : userData.success.img_profile;
+
+        if (sessionStorage.getItem('userData')) sessionStorage.removeItem('userData');
 
         let data = {
             user : {

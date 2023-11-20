@@ -1,9 +1,14 @@
 import { uploadImgBtn, uploadImgCloseBtn, OpenUploadImgBox, CloseUploadImgBox, InitailizeUploadImgForm} from "../../utilities/uploadImgForm.js";
+import { updateUserData } from "../layouts/header.js";
 import { profileSubmitter } from "../../utilities/profileSubmitter.js";
-import { selected, editProfile, selectProfile, uploadImgProfile } from "../../utilities/helper/apiFetcher.js";
+import { uploadImgProfileAPI, editProfileAPI } from "../../utilities/helper/apiFetcher.js";
 import { userSingleton } from "../../utilities/helper/user.js";
 
+let userData;
 const submitter = profileSubmitter.getInstead();
+const user = userSingleton.getInstead();
+
+InitailizeUploadImgForm();
 
 // User input form setting
 let userEmailInput = document.querySelector('#user-email');
@@ -20,24 +25,54 @@ let cancelEmailBtn = emailBox.children[emailBox.childElementCount - 1];
 
 uploadImgBtn?.addEventListener('click', OpenUploadImgBox);
 uploadImgCloseBtn?.addEventListener('click', CloseUploadImgBox);
-uploadImgForm?.addEventListener('change', selectProfile);
+// uploadImgForm?.addEventListener('change', selectProfile);
 uploadImgForm?.addEventListener('submit', uploadImgProfile);
 
+async function editProfile(e) {
+    e.preventDefault()
+    try {
+        // Replace response API into userData
+        const response = await editProfileAPI();
+        
+        // Update UI in header and form
+        user.setResponseData(response);
+
+        userData = user.getUserObject();
+
+        updateUserData(userData);
+
+        setFormData(userData);
+        // Reset toggle form
+        resetToggleForm();
+    } catch(err) {
+        console.log(err);
+    }
+}
+
+async function uploadImgProfile(e) {
+    e.preventDefault();
+    try {
+        const response = await uploadImgProfileAPI();
+
+        user.setResponseData(response);
+        updateUserData(response);
+
+        setFormData(response);
+
+        CloseUploadImgBox();
+    } catch (err) {
+        console.log(err);
+    }
+    
+}
+
 editEmailBtn?.addEventListener('click', () => {
-    editEmailBtn.classList.add('hidden');
-    cancelEmailBtn.classList.remove('hidden');
-    confirmPasswordToChangeEmailBox.classList.remove('hidden');
     submitter.enableChangeEmail();
-    console.log(submitter);
     ToggleChangeEmail();
 });
 
 cancelEmailBtn?.addEventListener('click', () => {
-    cancelEmailBtn.classList.add('hidden');
-    editEmailBtn.classList.remove('hidden');
-    confirmPasswordToChangeEmailBox.classList.add('hidden');
     submitter.disableChangeEmail();
-    console.log(submitter);
     ToggleChangeEmail();
 });
 
@@ -49,48 +84,63 @@ let editPasswordBtn = document.querySelector('#user-password-box').children[2];
 let cancelPasswordBtn = document.querySelector('#confirm-user-password-box').children[2];
 
 let imgProfileSlot = document.querySelector('#profile-img');
-let profileForm= document.querySelector('.profile-setting-form');
+let profileForm = document.querySelector('.profile-setting-form');
 
 editPasswordBtn?.addEventListener('click', () => {
-    inputPasswordBox.classList.add('hidden');
-    inputConfirmPasswordBox.classList.remove('hidden');
-    confirmPasswordBox.classList.replace('hidden', 'flex');
     submitter.enableChangePassword();
-    console.log(submitter);
     ToggleChangePassword();
 });
 
 cancelPasswordBtn.addEventListener('click', () => {
-    inputPasswordBox.classList.remove('hidden');
-    inputConfirmPasswordBox.classList.add('hidden');
-    confirmPasswordBox.classList.replace('flex', 'hidden');
     submitter.disableChangePassword();
-    console.log(submitter);
     ToggleChangePassword();
 });
-
-InitailizeUploadImgForm();
-
-const user = userSingleton.getInstead();
-let userData;
 
 if (user.authentication.isLogIn()) {
 
     userData = user.getUserObject();
+    setFormData(userData);
+} else {
+    location.href = 'http://notediary:8080/public/homepage.html';
+}
+
+function setFormData(userData) {
     if (userData) {
-        imgProfileSlot.setAttribute('src', userData.user.img_profile);
-        userEmailInput.value = userData.user.email;
-        userPasswordInput.value = userData.user.password;
+        let email = userData.user ? userData.user.email : userData.success.email;
+        let password = userData.user ? userData.user.password : userData.success.password;;
+        let img_profile = userData.user ? userData.user.img_profile : userData.success.img_profile;
+
+        imgProfileSlot.setAttribute('src', img_profile);
+        userEmailInput.value = email;
+        userPasswordInput.value = password;
     }
+}
+
+function resetToggleForm() {
+    submitter.disableChangeEmail();
+    submitter.disableChangePassword();
+    ToggleChangeEmail();
+    ToggleChangePassword();
+
+    confirmToChangeEmailInput.value = '';
+    userPasswordInput.setAttribute("value", "");
+    inputConfirmPasswordBox.setAttribute("value", "");
+    confirmPasswordBox.setAttribute("value", "");
 }
 
 function ToggleChangeEmail() {
     switch (submitter.wantToChangeEmail()) {
         case 0:
+            cancelEmailBtn.classList.add('hidden');
+            editEmailBtn.classList.remove('hidden');
+            confirmPasswordToChangeEmailBox.classList.add('hidden');
             confirmToChangeEmailInput.required = false;
-            userEmailInput.value = userData.user.email;
+            userEmailInput.value = userData.user ? userData.user.email : userData.success.email;
             break;
         case 1:
+            editEmailBtn.classList.add('hidden');
+            cancelEmailBtn.classList.remove('hidden');
+            confirmPasswordToChangeEmailBox.classList.remove('hidden');
             confirmToChangeEmailInput.required = true;
             break;
     }
@@ -99,13 +149,21 @@ function ToggleChangeEmail() {
 function ToggleChangePassword() {
     switch (submitter.wantToChangePassword()) {
         case 0:
-            userPasswordInput.setAttribute("value", userData.user.password);
+            inputPasswordBox.classList.remove('hidden');
+            inputConfirmPasswordBox.classList.add('hidden');
+            confirmPasswordBox.classList.replace('flex', 'hidden');
+
+            userPasswordInput.setAttribute("value", userData.user ? userData.user.password : userData.success.password);
 
             confirmToChangePasswordInput.required = false;
             newPasswordInput.required = false;
             confirmNewPasswordInput.required = false;
         break;
         case 1:
+            inputPasswordBox.classList.add('hidden');
+            inputConfirmPasswordBox.classList.remove('hidden');
+            confirmPasswordBox.classList.replace('hidden', 'flex');
+
             userPasswordInput.setAttribute("value", "");
 
             confirmToChangePasswordInput.required = true;

@@ -75,7 +75,6 @@ async function plugin() {
     try {
         if (sessionStorage.getItem("userData") == null) {
             userData = await getUserData(user.authentication.issuer());
-            console.log(userData)
             user.setResponseData(userData);
         } else {
             userData = user.getUserObject();
@@ -97,7 +96,20 @@ function plugout() {
     user.logout();
 }
 
+function timeoutChecker() {
+    let now = Date.now();
+    let expire = user.authentication.getTimeout();
+    if ( (now > expire) && (now <= expire + (30 * 1000)) ) {
+        extendTime();
+    }
+    else if ( (now > expire + (30 * 1000)) ){
+        user.logout();
+    }
+}
+
 if (user.authentication.isLogIn()) {
+    timeoutChecker();
+    
     plugin();
 } else {
     plugout();

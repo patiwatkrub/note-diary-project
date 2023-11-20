@@ -1,5 +1,6 @@
 import { body } from "../../src/utilities/helper/body.js";
 
+let uploadIMGForm = body.querySelector('#upload-profile');
 let imgFile = body.querySelector('#upload-img');
 
 let uploadImgBox = body.querySelector('#upload-img-box');
@@ -7,6 +8,7 @@ let uploadImgBtn = body.querySelector('#upload-profile-img');
 let uploadImgCloseBtn = body.querySelector('#upload-img-close-btn');
 
 function InitailizeUploadImgForm() {
+    uploadIMGForm = body.querySelector('#upload-profile');
     imgFile = body.querySelector('#upload-img');
     
     uploadImgBox = body.querySelector('#upload-img-box');
@@ -26,4 +28,4 @@ function clearUploadImgForm() {
     imgFile.value = '';
 }
 
-export { uploadImgBtn, uploadImgCloseBtn, OpenUploadImgBox, CloseUploadImgBox, InitailizeUploadImgForm };
+export { uploadIMGForm, imgFile, uploadImgBtn, uploadImgCloseBtn, OpenUploadImgBox, CloseUploadImgBox, InitailizeUploadImgForm };

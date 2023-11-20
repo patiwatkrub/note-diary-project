@@ -3,12 +3,13 @@ import { InformationBox } from "../../components/subcomponents/informationBox.js
 import { loadingBox } from "../../components/subcomponents/loadingBox.js";
 import { signInForm, toggleSignInModalBox } from "../signInForm.js";
 import { loginForm, toggleLogInModalBox, closeLogInBox } from "../logInForm.js";
+import { uploadIMGForm } from "../uploadImgForm.js";
 import { profileSubmitter } from "../profileSubmitter.js";
 import { userSingleton } from "./user.js";
 import { escapeHtml } from "./escapeHTML.js";
 import { plugin } from "../../app.js";
 
-let selected;
+// let selected;
 
 const user = userSingleton.getInstead();
 
@@ -116,15 +117,16 @@ function login(e) {
                     closeLogInBox();
                     setTimeout(() => {
                         plugin();
-                    }, 2000);
+                    }, 500);
                     break;
                 case 202:
                     logBox.createBox("success", "Success", `Welcome back, ${response.user}`);
                     user.login(username, password);
+                    user.confirmation = 1;
                     closeLogInBox();
                     setTimeout(() => {
                         plugin();
-                    }, 2000);
+                    }, 500);
                     break;
                 default:
                     logBox.createBox("error", info, response[info]);
@@ -261,15 +263,44 @@ function getNoteData(issuer, callback){
     xhr.send()
 }
 
-function editProfile(e) {
-    e.preventDefault();
-    const submitter = profileSubmitter.getInstead();
-    console.log(submitter);
-    let issuer = user.authentication.issuer()
-    const prepURL = submitter.submit(issuer);
+function editProfileAPI() {
+    return new Promise((resolve, reject) => {
+        let profileForm = body.querySelector('.profile-setting-form');
 
-    console.log(profileSubmitter);
-    console.log(prepURL);
+        const xhr = new XMLHttpRequest();
+        const logBox = new InformationBox();
+        const formData = new FormData(profileForm);
+        const submitter = profileSubmitter.getInstead();
+
+        let issuer = user.authentication.issuer()
+        
+        const prepURL = submitter.submit(issuer);
+        
+        xhr.onload = () => {
+            let statusCode = xhr.status;
+            let response = xhr.response;
+            let keys = Object.keys(response);
+
+            let info = keys[0];
+            if (statusCode == 202) {
+                resolve(response);
+            } else {
+                reject(logBox.createBox("error", info, response[info]));
+            }
+        }
+
+        xhr.onerror = () => {
+            reject(logBox.createBox("error", "Unsuccess", "something went wrong"));
+        }
+
+        xhr.open('POST', prepURL, true);
+
+        xhr.withCredentials = true;
+        xhr.responseType = 'json';
+
+        xhr.send(formData);
+    });
+    
 
     // const notEmptyEmail = confirmToChangeEmailInput.value !== "";
     // const hasChangeEmail = confirmToChangeEmailInput.value !== userData.email;
@@ -304,22 +335,59 @@ function editProfile(e) {
     // location.reload()
 }
 
-function selectProfile(e) {
+// function selectProfile(e) {
 
-    if (e.target.files[0]) {
-        selected = e.target.files[0].name;
-    }
-}
+//     if (e.target.files[0]) {
+//         selected = e.target.files[0];
+//     }
+// }
 
-function uploadImgProfile(e) {
-    e.preventDefault();
+function uploadImgProfileAPI() {
+    // back-end handler this method
+    // const filepath = "http://notediary:8081/public/" + selected;
+    // console.log(selected);
     
-    const filepath = "http://notediary:8081/public/" + selected;
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        const logBox = new InformationBox();
+        const issuer = user.authentication.issuer();
 
-    console.log(filepath);
-    console.log("Upload success...");
+        // const formDataA = new FormData();
+        // use already form is working
+        const formData = new FormData(uploadIMGForm);
 
-    // location.reload();
+        xhr.onload = () => {
+            let statusCode = xhr.status;
+            let response = xhr.response;
+            let keys = Object.keys(response);
+
+            let info = keys[0];
+            if (statusCode == 200) {
+                resolve(response);
+                
+                // console.log("Upload success...");
+            } else {
+                reject(logBox.createBox("error", info, response[info]));
+            }
+        }
+
+        xhr.onerror = () => {
+            reject(logBox.createBox("error", "Unsuccess", "something went wrong"));
+        }
+
+        xhr.open('POST', `http://notediary:8081/api/user/${issuer}/edit/img-profile`, true);
+
+        xhr.withCredentials = true;
+        xhr.responseType = 'json'
+
+        // formDataA.append("file", selected);
+        // console.log(formDataA);
+        // console.log(formData);
+        xhr.send(formData);
+        
+    })
+
+
 }
 
 function logout(e) {
@@ -357,4 +425,4 @@ function hideLoadingBox() {
     loadingBox.classList.remove('flex', 'flex-row');
 }
 
-export { signIn, login, getUserData, getNoteData, selected, editProfile, selectProfile, uploadImgProfile, extendTime, logout };
+export { signIn, login, getUserData, getNoteData, uploadImgProfileAPI, editProfileAPI, extendTime, logout };
