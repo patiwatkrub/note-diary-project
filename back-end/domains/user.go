@@ -25,7 +25,8 @@ type UserInterface interface {
 	GetDeletedUsers() ([]User, error)
 	ValidationUser(string, string) (*User, error)
 	Verify(string) error
-	ResetPassword(string, string, string) (*User, error)
+	ValidationEmail(string) error
+	ResetPassword(string, string) (*User, error)
 	ChangePassword(string, string) (*User, error)
 	ChangeEmail(string, string) (*User, error)
 	ChangeEmailAndPassword(string, string, string) (*User, error)

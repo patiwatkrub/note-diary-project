@@ -249,7 +249,18 @@ func (user *userAccessService) Verify(username string) error {
 	return nil
 }
 
-func (user *userAccessService) ResetPassword(username, email, newPassword string) (*UserResponse, error) {
+func (user *userAccessService) CheckEmail(email string) (err error) {
+	err = user.userDBI.ValidationEmail(email)
+	if err != nil {
+		logs.Error(err)
+		errS := errs.NewEmailNotFound()
+		return errS
+	}
+
+	return nil
+}
+
+func (user *userAccessService) ResetPassword(email, newPassword string) (*UserResponse, error) {
 	encyptPassword, err := utility.EncyptPassword(newPassword)
 	if err != nil {
 		logs.Error(err)
@@ -257,7 +268,7 @@ func (user *userAccessService) ResetPassword(username, email, newPassword string
 		return nil, errS
 	}
 
-	getUser, err := user.userDBI.ResetPassword(username, email, encyptPassword)
+	getUser, err := user.userDBI.ResetPassword(email, encyptPassword)
 	if err != nil {
 		logs.Error(err)
 		errS := errs.NewInternalServerError()
@@ -276,7 +287,7 @@ func (user *userAccessService) ResetPassword(username, email, newPassword string
 	return aUser, nil
 }
 
-func (user *userAccessService) ChangePassword(username string, password, newPassword string) (*UserResponse, error) {
+func (user *userAccessService) ChangePassword(username, password, newPassword string) (*UserResponse, error) {
 	getUser, err := user.userDBI.GetUser(username)
 	if err != nil {
 		logs.Error(err)

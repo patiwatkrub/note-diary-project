@@ -25,11 +25,10 @@ let cancelEmailBtn = emailBox.children[emailBox.childElementCount - 1];
 
 uploadImgBtn?.addEventListener('click', OpenUploadImgBox);
 uploadImgCloseBtn?.addEventListener('click', CloseUploadImgBox);
-// uploadImgForm?.addEventListener('change', selectProfile);
 uploadImgForm?.addEventListener('submit', uploadImgProfile);
 
 async function editProfile(e) {
-    e.preventDefault()
+    e.preventDefault();
     try {
         // Replace response API into userData
         const response = await editProfileAPI();
@@ -45,7 +44,7 @@ async function editProfile(e) {
         // Reset toggle form
         resetToggleForm();
     } catch(err) {
-        console.log(err);
+        console.error(err);
     }
 }
 
@@ -61,7 +60,7 @@ async function uploadImgProfile(e) {
 
         CloseUploadImgBox();
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
     
 }

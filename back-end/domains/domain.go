@@ -10,7 +10,7 @@ var (
 	ErrUserDeleted                          = errors.New("user is deleted")
 	ErrGetUsersFailed                       = errors.New("can not get user data")
 	ErrInvalidUsernamePassword              = errors.New("username and password is not valid")
-	ErrEmailNotFound                        = errors.New("the user not found for verify email")
+	ErrEmailNotFound                        = errors.New("the email not found")
 	ErrVerifyFailed                         = errors.New("can not verify user data")
 	ErrEmailNotFoundToResetPassword         = errors.New("the email note found for reset password")
 	ErrResetPasswordFailed                  = errors.New("can not update user data for reset password")

@@ -85,7 +85,7 @@ async function plugin() {
             user.logInEvent.call();
         }
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
     
 }

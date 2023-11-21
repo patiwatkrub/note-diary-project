@@ -42,7 +42,9 @@ var isSecure = false
 // false is can access with JS
 var isHttpOnly = true
 
-var badRequestStr string = "Bad Request"
+var badRequestInvalidPwd string = "Password incorrect"
+var badRequestInputEmpty string = "Input values are empty"
+var badRequestPwdNotMatch string = "New Password is not match"
 
 type userAccessController struct {
 	userSRVI services.UserService
@@ -69,7 +71,6 @@ func (user *userAccessController) CreateUserAccount(ctx *gin.Context) {
 }
 
 func (user *userAccessController) GetUser(ctx *gin.Context) {
-	logs.Info("call GetUser")
 	username := ctx.Param("username")
 
 	getUser, err := user.userSRVI.GetUser(username)
@@ -156,7 +157,6 @@ func (user *userAccessController) Login(ctx *gin.Context) {
 }
 
 func (user *userAccessController) ExtendToken(ctx *gin.Context) {
-	logs.Info("call ExtendToken")
 	cookie, _ := ctx.Cookie(tokenKey)
 
 	token, _ := utility.ValidateToken(cookie)
@@ -172,7 +172,6 @@ func (user *userAccessController) ExtendToken(ctx *gin.Context) {
 }
 
 func (user *userAccessController) LogOut(ctx *gin.Context) {
-	logs.Info("call LogOut")
 	username := ctx.Param("username")
 
 	// ctx.SetSameSite(http.SameSiteNoneMode)
@@ -184,7 +183,6 @@ func (user *userAccessController) LogOut(ctx *gin.Context) {
 }
 
 func (user *userAccessController) Verify(ctx *gin.Context) {
-	logs.Info("call Verify")
 	username := ctx.Param("username")
 
 	if err := user.userSRVI.Verify(username); err != nil {
@@ -199,13 +197,23 @@ func (user *userAccessController) Verify(ctx *gin.Context) {
 	})
 }
 
-func (user *userAccessController) ResetPassword(ctx *gin.Context) {
-	username := ctx.Param("username")
+func (user *userAccessController) CheckEmail(ctx *gin.Context) {
+	email := ctx.PostForm("verify-email")
 
+	err := user.userSRVI.CheckEmail(email)
+	if err != nil {
+		ControllerError(ctx, err)
+		return
+	}
+
+	ctx.Status(200)
+}
+
+func (user *userAccessController) ResetPassword(ctx *gin.Context) {
 	email := ctx.PostForm("verify-email")
 	resetPwd := ctx.PostForm("reset-password")
 
-	aUser, err := user.userSRVI.ResetPassword(username, email, resetPwd)
+	aUser, err := user.userSRVI.ResetPassword(email, resetPwd)
 	if err != nil {
 		ControllerError(ctx, err)
 		return
@@ -224,6 +232,7 @@ func (user *userAccessController) ChosenEditProfile(ctx *gin.Context) {
 	confirmPasswordPassword := ctx.PostForm("confirm-password-to-change-password")
 	newEmail := ctx.PostForm("user-email")
 	newPassword := ctx.PostForm("new-password")
+	confirmNewPassword := ctx.PostForm("confirm-new-password")
 
 	desireToChangeEmail := ctx.Query("change-email")
 	desireToChangePassword := ctx.Query("change-password")
@@ -231,7 +240,7 @@ func (user *userAccessController) ChosenEditProfile(ctx *gin.Context) {
 	if desireToChangeEmail == "1" && desireToChangePassword == "0" {
 		if confirmPasswordEmail == "" || newEmail == "" {
 			ctx.JSON(404, gin.H{
-				"error": badRequestStr,
+				"error": badRequestInputEmpty,
 			})
 			return
 		}
@@ -249,9 +258,16 @@ func (user *userAccessController) ChosenEditProfile(ctx *gin.Context) {
 
 		return
 	} else if desireToChangeEmail == "0" && desireToChangePassword == "1" {
-		if confirmPasswordPassword == "" || newPassword == "" {
+		if confirmPasswordPassword == "" || newPassword == "" || confirmNewPassword == "" {
 			ctx.JSON(404, gin.H{
-				"error": badRequestStr,
+				"error": badRequestInputEmpty,
+			})
+
+			return
+		}
+		if newPassword != confirmNewPassword {
+			ctx.JSON(404, gin.H{
+				"error": badRequestPwdNotMatch,
 			})
 
 			return
@@ -271,19 +287,28 @@ func (user *userAccessController) ChosenEditProfile(ctx *gin.Context) {
 		return
 	} else if desireToChangeEmail == "1" && desireToChangePassword == "1" {
 		if confirmPasswordEmail == "" || confirmPasswordPassword == "" ||
-			newEmail == "" || newPassword == "" {
+			newEmail == "" || newPassword == "" ||
+			confirmNewPassword == "" {
 			ctx.JSON(400, gin.H{
-				"error": badRequestStr,
+				"error": badRequestInputEmpty,
 			})
 			return
 		}
 
 		if confirmPasswordEmail != confirmPasswordPassword {
 			ctx.JSON(400, gin.H{
-				"error": badRequestStr,
+				"error": badRequestInvalidPwd,
 			})
 			return
 
+		}
+
+		if newPassword != confirmNewPassword {
+			ctx.JSON(404, gin.H{
+				"error": badRequestPwdNotMatch,
+			})
+
+			return
 		}
 
 		password := confirmPasswordPassword

@@ -23,7 +23,8 @@ type UserService interface {
 	GetDeletedUsers() ([]UserResponse, error)
 	Login(string, string) (*UserResponse, int, error)
 	Verify(string) error
-	ResetPassword(string, string, string) (*UserResponse, error)
+	CheckEmail(string) error
+	ResetPassword(string, string) (*UserResponse, error)
 	ChangePassword(string, string, string) (*UserResponse, error)
 	ChangeEmail(string, string, string) (*UserResponse, error)
 	ChangeEmailAndPassword(string, string, string, string) (*UserResponse, error)

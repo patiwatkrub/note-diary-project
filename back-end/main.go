@@ -38,12 +38,14 @@ func main() {
 
 	router.Use(middleware.CORSSetUp())
 
-	// localhost:8080/note-diary-api -> notediary:8081/api
-	api := router.Group("/api")
-
 	router.GET("/", func(c *gin.Context) {
 		c.String(200, "Server is running on port %v", viper.GetInt("app.port"))
 	})
+
+	// localhost:8080/note-diary-api -> notediary:8081/api
+	api := router.Group("/api")
+	api.POST("/check-email", userAccessController.CheckEmail)
+	api.POST("/reset-password", userAccessController.ResetPassword)
 
 	// localhost:8080/note-diary-api/admin -> notediary:8081/api/admin
 	admin := api.Group("/admin", middleware.RoleAdmin)
@@ -67,7 +69,7 @@ func main() {
 	// Management user data
 	authorization.POST("/edit/profile", userAccessController.ChosenEditProfile)
 	authorization.POST("/edit/img-profile", userAccessController.UploadProfile)
-	authorization.POST("/reset-password", userAccessController.ResetPassword)
+	// authorization.POST("/reset-password", userAccessController.ResetPassword)
 
 	authorization.DELETE("/delete", userAccessController.DeleteUser)
 

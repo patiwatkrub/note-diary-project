@@ -104,7 +104,14 @@ class User {
     }
 
     set confirmation(confirm) {
+        const tempStr = sessionStorage.getItem('user');
+        let temp = JSON.parse(tempStr);
+
+        temp.confirmation = confirm;
         this.#confirmation = confirm;
+
+        console.log(temp);
+        sessionStorage.setItem("user", JSON.stringify(temp));
     }
 
     setTimeout(timestamp) {
@@ -128,7 +135,10 @@ class User {
     }
 
     get confirmation() {
-        return this.#confirmation;
+        const userDataStr = sessionStorage.getItem("user");
+        const userData = JSON.parse(userDataStr);
+        
+        return userData.confirmation;
     }
 
     getTimeout() {
@@ -154,9 +164,7 @@ class User {
     }
 
     extendTime() {
-
         // Reset user session
-        console.log("user's extend");
         
         this.authentication.signedTime = 0;
         this.authentication.setTimeout(this.#timeout);

@@ -109,6 +109,15 @@ func NewUserNotFound() CustomError {
 	}
 }
 
+// Error: Can not fund user from database
+func NewEmailNotFound() CustomError {
+	return CustomError{
+		StatusCode:   404,
+		ErrorHeader:  "Unsuccess",
+		ErrorMessage: "Email Not Found",
+	}
+}
+
 // Error: Can not find an Author in User table to create note
 func NewCreateNoteWithAuthorNotExist() CustomError {
 	return CustomError{

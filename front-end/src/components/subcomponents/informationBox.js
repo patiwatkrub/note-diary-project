@@ -65,7 +65,7 @@ export class InformationBox {
                 </span>
             </span>
             <span class="mr-1 p-1 ${this.#detailTextColor}">
-                .${this.#detail}
+                ${this.#detail}
             </span>
             <span class="hidden p-1 -translate-x-1 text-amber-800 group-hover:block">
                 &cross;

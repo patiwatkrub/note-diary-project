@@ -9,8 +9,6 @@ import { userSingleton } from "./user.js";
 import { escapeHtml } from "./escapeHTML.js";
 import { plugin } from "../../app.js";
 
-// let selected;
-
 const user = userSingleton.getInstead();
 
 function signIn(e) {
@@ -114,6 +112,7 @@ function login(e) {
                 case 200:
                     logBox.createBox("warning", info, response[info]);
                     user.login(username, password);
+                    user.confirmation = 0;
                     closeLogInBox();
                     setTimeout(() => {
                         plugin();
@@ -150,36 +149,6 @@ function login(e) {
 
     closeLogInBox();
 }
-
-// function getUserData(issuer, callback) {
-
-//     const xhr = new XMLHttpRequest;
-//     const logBox = new InformationBox();
-//     xhr.onreadystatechange = () => {
-//         if (xhr.readyState == 4) {
-//             let statusCode = xhr.status;
-//             let response = xhr.response;
-//             let keys = Object.keys(response);
-
-//             let info = keys[0];
-//             if (statusCode !== 200) {
-//                 logBox.createBox("error", info, response[info])
-//                 callback(null);
-//             } else if (statusCode === 200) {
-//                 callback(response);
-//             }
-//         }
-//     }
-
-//     xhr.onerror = () => {
-//         console.log("something went wrong");
-//     }
-
-//     xhr.open("GET", `http://notediary:8081/api/user/${issuer}`, true);
-//     xhr.responseType = "json";
-
-//     xhr.send();
-// }
 
 function getUserData(issuer) {
 
@@ -264,11 +233,19 @@ function getNoteData(issuer, callback){
 }
 
 function editProfileAPI() {
+
+    const logBox = new InformationBox();
+
+    if (user.confirmation === 0) {
+        logBox.createBox("warning", "Unsuccess", "Please, Verify on your is email");
+        return;
+    }
+
     return new Promise((resolve, reject) => {
         let profileForm = body.querySelector('.profile-setting-form');
 
         const xhr = new XMLHttpRequest();
-        const logBox = new InformationBox();
+        
         const formData = new FormData(profileForm);
         const submitter = profileSubmitter.getInstead();
 
@@ -300,60 +277,22 @@ function editProfileAPI() {
 
         xhr.send(formData);
     });
-    
-
-    // const notEmptyEmail = confirmToChangeEmailInput.value !== "";
-    // const hasChangeEmail = confirmToChangeEmailInput.value !== userData.email;
-
-    // if (GetChangeEmailValue() && ( notEmptyEmail && hasChangeEmail)) {
-    //     if (ValidationPassword(userData.username, confirmToChangeEmailInput.value)) {
-    //         let newEmail = userEmailInput.value;
-    //         UpdateEmail(userData.username, newEmail);
-    //     }
-    // }
-
-    // const notEmptyPassword = confirmToChangePasswordInput.value !== "";
-    
-    // if (GetChangePasswordValue() && notEmptyPassword) {
-    //     if (ValidationPassword(userData.username, confirmToChangePasswordInput.value) && 
-    //         ValidationNewPassword(newPasswordInput.value, confirmNewPasswordInput.value)) {
-    //         let newPassword = newPasswordInput.value;
-    //         UpdatePassword(userData.username, newPassword);
-    //     }
-    // }
-
-    // let user;
-    // if (GetChangePasswordValue()) {
-    //     user = FindUserByValidation(userData.username.toLowerCase(), newPasswordInput.value.toLowerCase());
-    // } else {
-    //     user = FindUserByValidation(userData.username.toLowerCase(), userData.password.toLowerCase());
-    // }
-
-    // let userString = JSON.stringify(user);
-
-    // localStorage.setItem('user', b64EncodeUnicode(userString));
-    // location.reload()
 }
 
-// function selectProfile(e) {
-
-//     if (e.target.files[0]) {
-//         selected = e.target.files[0];
-//     }
-// }
-
 function uploadImgProfileAPI() {
-    // back-end handler this method
-    // const filepath = "http://notediary:8081/public/" + selected;
-    // console.log(selected);
     
+    const logBox = new InformationBox();
+
+    if (user.confirmation === 0) {
+        logBox.createBox("warning", "Unsuccess", "Please, Verify on your is email");
+        return;
+    }
+
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        const logBox = new InformationBox();
+        
         const issuer = user.authentication.issuer();
 
-        // const formDataA = new FormData();
-        // use already form is working
         const formData = new FormData(uploadIMGForm);
 
         xhr.onload = () => {
@@ -364,8 +303,6 @@ function uploadImgProfileAPI() {
             let info = keys[0];
             if (statusCode == 200) {
                 resolve(response);
-                
-                // console.log("Upload success...");
             } else {
                 reject(logBox.createBox("error", info, response[info]));
             }
@@ -379,10 +316,7 @@ function uploadImgProfileAPI() {
 
         xhr.withCredentials = true;
         xhr.responseType = 'json'
-
-        // formDataA.append("file", selected);
-        // console.log(formDataA);
-        // console.log(formData);
+        
         xhr.send(formData);
         
     })

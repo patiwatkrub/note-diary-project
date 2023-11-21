@@ -13,6 +13,7 @@ var queryUsernameStm string = "SELECT number, username, password, email, img_pro
 var queryValidateUserStm string = "SELECT number, username, password, email, img_profile, confirmation, created_at, updated_at, deleted_at FROM users WHERE username = ? OR email = ?"
 var queryUsernameAndPasswordStm string = "SELECT number, username, password, email, img_profile, confirmation, created_at, updated_at, deleted_at FROM users WHERE username = ? AND password = ?"
 var queryUsernameAndEmailStm string = "SELECT number, username, password, email, img_profile, confirmation, created_at, updated_at, deleted_at FROM users WHERE username = ? AND password = ?"
+var queryEmailStm string = "SELECT number, username, password, email, img_profile, confirmation, created_at, updated_at, deleted_at FROM users WHERE email = ?"
 
 type userAccessDB struct {
 	db *gorm.DB
@@ -23,7 +24,7 @@ func NewUserAccessingDB(db *gorm.DB) UserInterface {
 }
 
 func (user *userAccessDB) Create(username, password, email string) (err error) {
-	//Begin transection statement
+	//Begin transaction statement
 	tx := user.db.Begin()
 
 	aUser := &User{}
@@ -104,7 +105,7 @@ func (user *userAccessDB) ValidationUser(username, password string) (aUser *User
 func (user *userAccessDB) Verify(username string) (err error) {
 	var aUser User
 
-	//Prepare transection statement
+	//Prepare transaction statement
 	tx := user.db.Begin()
 
 	//Checking user has exist
@@ -112,7 +113,7 @@ func (user *userAccessDB) Verify(username string) (err error) {
 
 	if result.RowsAffected == 0 {
 		tx.Rollback()
-		return ErrEmailNotFound
+		return ErrUserNotFound
 	}
 
 	if aUser.DeletedAt.Valid {
@@ -129,16 +130,26 @@ func (user *userAccessDB) Verify(username string) (err error) {
 		return ErrVerifyFailed
 	}
 
-	//Commit transection statement
+	//Commit transaction statement
 	tx.Commit()
 
 	return nil
 }
 
-func (user *userAccessDB) ResetPassword(username, email, newPassword string) (aUser *User, err error) {
+func (user *userAccessDB) ValidationEmail(email string) (err error) {
+	result := user.db.Find(&User{}, "email = ?", email)
+
+	if result.Error != nil || result.RowsAffected == 0 {
+		return ErrEmailNotFound
+	}
+
+	return nil
+}
+
+func (user *userAccessDB) ResetPassword(email, newPassword string) (aUser *User, err error) {
 	tx := user.db.Begin()
 
-	result := tx.Raw(queryUsernameAndEmailStm, username, email).Scan(&aUser)
+	result := tx.Raw(queryEmailStm, email).Scan(&aUser)
 	if result.RowsAffected == 0 {
 		tx.Rollback()
 		return nil, ErrEmailNotFoundToResetPassword
