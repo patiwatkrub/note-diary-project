@@ -192,9 +192,7 @@ func (user *userAccessController) Verify(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"user": "confirmation success",
-	})
+	ctx.Redirect(301, "http://notediary:8080/public/homepage.html")
 }
 
 func (user *userAccessController) CheckEmail(ctx *gin.Context) {

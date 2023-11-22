@@ -285,6 +285,7 @@ func (user *userAccessDB) Delete(username string) error {
 	tx := user.db.Begin()
 
 	err := tx.Where("username = ?", username).Delete(&User{})
+
 	if err.Error != nil {
 		tx.Rollback()
 		return err.Error

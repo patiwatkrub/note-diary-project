@@ -1,7 +1,7 @@
 import { uploadImgBtn, uploadImgCloseBtn, OpenUploadImgBox, CloseUploadImgBox, InitailizeUploadImgForm} from "../../utilities/uploadImgForm.js";
 import { updateUserData } from "../layouts/header.js";
 import { profileSubmitter } from "../../utilities/profileSubmitter.js";
-import { uploadImgProfileAPI, editProfileAPI } from "../../utilities/helper/apiFetcher.js";
+import { uploadImgProfileAPI, editProfileAPI, deleteUserAPI } from "../../utilities/helper/apiFetcher.js";
 import { userSingleton } from "../../utilities/helper/user.js";
 
 let userData;
@@ -176,9 +176,23 @@ profileForm?.addEventListener('submit', editProfile);
 
 let deleteUserBtn = document.querySelector('#delete-user-btn');
 
-deleteUserBtn?.addEventListener('click', () => {
+deleteUserBtn?.addEventListener('click', deleteUser);
 
-    localStorage.removeItem('user');
+async function deleteUser(e) {
+    e.preventDefault();
+    try {
+        const success = await deleteUserAPI();
 
-    location.reload();
-});
+        if (success == 0) {
+            return;
+        }
+
+        setTimeout(() => {
+            user.logout();
+
+            location.reload();
+        }, 2000);
+    } catch (err) {
+        console.error(err);
+    }
+}

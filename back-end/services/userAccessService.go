@@ -195,7 +195,14 @@ func (user *userAccessService) Login(username, password string) (*UserResponse, 
 	getUser, err := user.userDBI.GetUser(username)
 	if err != nil {
 		logs.Error(err)
-		errS := errs.NewUserNotFound()
+
+		var errS errs.CustomError
+
+		if err.Error() == "user is deleted" {
+			errS = errs.NewUserDeleted()
+		} else {
+			errS = errs.NewUserNotFound()
+		}
 
 		return nil, -1, errS
 	}
@@ -480,11 +487,14 @@ func (user *userAccessService) DeleteUser(username string) (err error) {
 	var errS errs.CustomError
 
 	err = user.userDBI.Delete(username)
-
+	
 	if err != nil {
 		logs.Error(err)
 		errS = errs.NewInternalServerError()
-	}
 
-	return errS
+		return errS
+	}
+	
+
+	return nil
 }
