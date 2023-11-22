@@ -5,32 +5,98 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-mail Verification</title>
+    <style>
+        .container {
+            margin: 10%;
+        }
+
+        .font {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        .content-box {
+            background-color: rgb(248,247,247);
+            padding: 20px;
+            margin: auto;
+            font-size: larger;
+            font-weight: 400;
+            border-style: solid;
+            border-width: 10px;
+            border-left-color: rgb(107, 255, 251);
+            border-top-color: rgb(244, 111, 95);
+            border-right-color: rgb(49, 193, 20 );
+            border-bottom-color: gainsboro;
+        }
+
+        .content-box > .title {
+            padding: 12px;
+            margin: auto;
+            width: auto;
+            color: white;
+            background: rgb(60, 189, 0);
+            background: linear-gradient(90deg, rgba(69,255,0,1) 5%, rgba(73,173,58,0.9893207282913166) 50%, rgba(69,255,0,1) 100%);
+        }
+
+        .content-box > .content {
+            margin-top: -5px;
+            padding: 10px 25px;
+            font-size: medium;
+            background-color: rgb(253, 255, 249 );
+        }
+
+        .email,
+        .github {
+            text-decoration: none;
+            color: white;
+        }
+
+        .tel {
+            text-decoration: none;
+            background-color: black;
+            color: black;
+        }
+
+        .icon {
+            display: inline-flex;
+            width: 20px;
+            height: 20px;
+        }
+
+        .footer {
+            background-color: rgb(59,60,58);
+            font-size: 80%;
+            font-weight: 200;
+            color: whitesmoke;
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <div style="margin: 10%;">
-        <div style="font-family: Franklin Gothic Medium,Franklin Gothic,ITC Franklin Gothic,Arial,sans-serif; font-size: larger; font-weight: 400; margin: auto; padding: 20px; background-color: rgb(248, 247, 247); border-style: solid; border-width: 10px; border-left-color: rgb(107, 255, 251); border-top-color: rgb(244, 111, 95); border-right-color: rgb(49, 193, 20 ); border-bottom-color: gainsboro;">
-            <div style="background: rgb(60, 189, 0); background: linear-gradient(90deg, rgba(69,255,0,1) 5%, rgba(73,173,58,0.9893207282913166) 50%, rgba(69,255,0,1) 100%); color: white; margin: auto; width: auto; padding: 12px;">E-mail Verification</div>
-            <div style="font-size: medium; background-color: rgb(253, 255, 249 ); margin-top: -5px; padding: 10px 25px">
+    <div class="container">
+        <div class="content-box font">
+            <div class="title">E-mail Verification</div>
+            <div class="content">
                 <h3>Dear, <i>{{.Name}}</i></h3>
                 <p>Thank you for trusting in our service. about making note daily lists application</p>
-                <p>Please, verification your account follow on <a href="localhost:8080/note-diary-api/user/{{.Name}}/confirm" class="">Link</a></p>
+                <p>Please, verification your account follow on <a href="http://notediary:8081/api/user/{{.Name}}/confirm">Link</a></p>
             </div>
         </div>
-        <div style="background-color: rgb(59, 60, 58); padding: 20px; text-align: center; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-size: 80%; font-weight: 200; color: whitesmoke;">
+        <div class="footer font">
             <div>
                 <span class="uppercase"><i>Copyright&copy;</i></span><br>
                 <span>
-                    Email &#9993;: <a style="color: white; text-decoration: none;" href="mailto:Patiwatkrubst@hotmail.com">Patiwatkrubst@hotmail.com</a>
+                    Email &#9993;: <a class="email" href="mailto:Patiwatkrubst@hotmail.com">Patiwatkrubst@hotmail.com</a>
                 </span><br>
                 <span>Github</span> 
                 <span>
-                    <img style="display: inline-flex; width: 20px; height: 20px;" src="https://cdn-icons-png.flaticon.com/24/2111/2111374.png" alt=""> 
+                    <img class="icon" src="https://cdn-icons-png.flaticon.com/24/2111/2111374.png" alt="github-icon"> 
                 </span>
                 <span> 
-                    : <a style="color: white; text-decoration: none;" href="https://github.com/patiwatkrub/note-diary-project" target="_blank">github.com/patiwatkrub/note-diary-project</a> 
+                    : <a class="github" target="_blank">github.com/patiwatkrub/note-diary-project</a> 
                 </span><br>
                 <span>
-                    Tel &#9743;: <a style="background-color: black; color: black; text-decoration: none;" href="tel:098-2838-104">098-2838-104</a>
+                    Tel &#9743;: <a class="tel" href="tel:098-2838-104">098-2838-104</a>
                 </span> 
             </div>
         </div>

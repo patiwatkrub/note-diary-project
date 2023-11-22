@@ -100,7 +100,7 @@ func NewLoginFail() CustomError {
 	}
 }
 
-// Error: Can not fund user from database
+// Error: Can not find user from database
 func NewUserNotFound() CustomError {
 	return CustomError{
 		StatusCode:   404,
@@ -109,12 +109,21 @@ func NewUserNotFound() CustomError {
 	}
 }
 
-// Error: Can not fund user from database
+// Error: Can not find email from database
 func NewEmailNotFound() CustomError {
 	return CustomError{
 		StatusCode:   404,
 		ErrorHeader:  "Unsuccess",
 		ErrorMessage: "Email Not Found",
+	}
+}
+
+// Error: User has been deleted
+func NewUserDeleted() CustomError {
+	return CustomError{
+		StatusCode:   404,
+		ErrorHeader:  "Unsuccess",
+		ErrorMessage: "User has been deleted",
 	}
 }
 

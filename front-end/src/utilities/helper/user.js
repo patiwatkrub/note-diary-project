@@ -110,7 +110,6 @@ class User {
         temp.confirmation = confirm;
         this.#confirmation = confirm;
 
-        console.log(temp);
         sessionStorage.setItem("user", JSON.stringify(temp));
     }
 

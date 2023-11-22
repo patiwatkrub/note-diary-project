@@ -321,7 +321,6 @@ function uploadImgProfileAPI() {
         
     })
 
-
 }
 
 function logout(e) {
@@ -349,6 +348,44 @@ function logout(e) {
     xhr.send();
 }
 
+function deleteUserAPI() {
+
+    const logBox = new InformationBox();
+
+    if (user.confirmation === 0) {
+        logBox.createBox("warning", "Unsuccess", "Please, Verify on your is email");
+        return 0;
+    }
+
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+
+        const issuer = user.authentication.issuer();
+
+        xhr.onload = () => {
+            let statusCode = xhr.status;
+            let response = xhr.response;
+            let keys = Object.keys(response);
+            
+            let info = keys[0];
+            if (statusCode == 500) {
+                reject(logBox.createBox("error", "Delete", response[info]));
+            } else if (statusCode == 200) {
+                resolve(logBox.createBox("info", "Delete", `${issuer} is Deleted`));
+            }
+        }
+        
+        xhr.onerror = () => {
+            reject(logBox.createBox("error", "Unsuccess", "something went wrong"));
+        }
+
+        xhr.open("DELETE", `http://notediary:8081/api/user/${issuer}/delete`, true);
+
+        xhr.withCredentials = true;
+        xhr.send();
+    }) 
+}
+
 function showLoadingBox() {
     loadingBox.classList.remove('hidden');
     loadingBox.classList.add('flex', 'flex-row');
@@ -359,4 +396,4 @@ function hideLoadingBox() {
     loadingBox.classList.remove('flex', 'flex-row');
 }
 
-export { signIn, login, getUserData, getNoteData, uploadImgProfileAPI, editProfileAPI, extendTime, logout };
+export { signIn, login, getUserData, getNoteData, uploadImgProfileAPI, editProfileAPI, extendTime, logout, deleteUserAPI };
