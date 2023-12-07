@@ -1,7 +1,7 @@
 let signInModalBox = document.createElement('div');
 
 signInModalBox.id = 'sign-in-box';
-signInModalBox.classList.add('hidden', `absolute`, 'box-border-theme', 'max-lg:fixed')
+signInModalBox.classList.add('hidden', `fixed`, 'box-border-theme')
 
 signInModalBox.innerHTML = `
 <div class="header-box max-lg:px-10">

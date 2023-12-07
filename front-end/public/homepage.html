@@ -20,7 +20,7 @@
                                 alt="How to use Icon"></a> :</b>
                 </p>
                 <div class="box-border-theme note-diary-content-items mt-10 mx-8 text-justify max-sm:mx-auto group is-login">
-                    <form id="diary-form" method="post" class="relative note-diary-form" action="" method="post">
+                    <form id="diary-form" class="relative note-diary-form">
                         <div class="flex note-diary-form-items">
                             <label class="note-diary-topic-label" for="diary-topic"><b>Topic :</b></label>
                             <input class="note-diary-topic-input " type="text" name="diary-topic" id="diary-topic" autocomplete="off" disabled>
@@ -52,7 +52,11 @@
                     <p class="absolute note-diary-title-2">
                         <b>List :</b>
                     </p>
-                    <ul id="diaries" class="">
+                    <ul id="diaries">
+                        <diary-box>
+                            <p slot="diary-topic" class="break-words">Topic 1</p>
+                            <p slot="diary-detail" class="indent-4">Detail 1</p>
+                        </diary-box>
                         <li class="diary-box">
                             <h3 class="row-span-1 p-2 text-left">
                                 <b>Topic:</b> 
@@ -159,12 +163,11 @@
             </div>
         </div>
     </div>
+    
     <div dir="rtl" class="info-stack flex flex-col-reverse gap-y-4"></div>
     <script src="../src/app.js" type="module" defer="defer"></script>
     <script src="../src/components/pages/homepage.js" type="module"></script>
 </body>
-<!-- form to call check exist email in backend -->
-<!-- forget password page -> modal, notification email and call api -->
 <!-- 
     1.make factory note diary
     2.make note diary's web component

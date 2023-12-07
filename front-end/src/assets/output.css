@@ -634,7 +634,8 @@ button {
 
 #sign-in-box, 
     #log-in-box, 
-    #upload-img-box {
+    #upload-img-box,
+    #forget-pwd-box {
   top: 50%;
   left: 50%;
   z-index: 10;
@@ -805,7 +806,7 @@ button {
 
 .note-submit-btn,
     .sign-in-submit-btn, .log-in-submit-btn,
-    .upload-submit-btn {
+    .upload-submit-btn, .forget-password-btn {
   width: auto;
   --tw-translate-x: -0.5rem;
   --tw-translate-y: 1rem;
@@ -819,7 +820,7 @@ button {
 @media not all and (min-width: 1024px) {
   .note-submit-btn,
     .sign-in-submit-btn, .log-in-submit-btn,
-    .upload-submit-btn {
+    .upload-submit-btn, .forget-password-btn {
     width: 100%;
   }
 }
@@ -1208,6 +1209,10 @@ button {
   left: 4rem;
 }
 
+.left-2 {
+  left: 0.5rem;
+}
+
 .z-0 {
   z-index: 0;
 }
@@ -1255,6 +1260,10 @@ button {
   margin-bottom: 0.25rem;
 }
 
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
 .ml-1 {
   margin-left: 0.25rem;
 }
@@ -1279,6 +1288,10 @@ button {
   margin-top: 0.5rem;
 }
 
+.mt-5 {
+  margin-top: 1.25rem;
+}
+
 .box-border {
   box-sizing: border-box;
 }
@@ -1297,6 +1310,10 @@ button {
 
 .inline-flex {
   display: inline-flex;
+}
+
+.grid {
+  display: grid;
 }
 
 .hidden {
@@ -1371,6 +1388,10 @@ button {
   min-width: 150px;
 }
 
+.min-w-\[320px\] {
+  min-width: 320px;
+}
+
 .min-w-\[80px\] {
   min-width: 80px;
 }
@@ -1416,6 +1437,11 @@ button {
 
 .translate-x-\[26px\] {
   --tw-translate-x: 26px;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.translate-y-1 {
+  --tw-translate-y: 0.25rem;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
@@ -1488,6 +1514,10 @@ button {
   flex-wrap: nowrap;
 }
 
+.place-content-center {
+  place-content: center;
+}
+
 .justify-center {
   justify-content: center;
 }
@@ -1502,6 +1532,11 @@ button {
 
 .gap-1 {
   gap: 0.25rem;
+}
+
+.gap-x-2 {
+  -moz-column-gap: 0.5rem;
+       column-gap: 0.5rem;
 }
 
 .gap-x-4 {
@@ -1581,6 +1616,11 @@ button {
   background-color: rgb(223 224 223 / var(--tw-bg-opacity));
 }
 
+.bg-gray-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(209 213 219 / var(--tw-bg-opacity));
+}
+
 .bg-green-200 {
   --tw-bg-opacity: 1;
   background-color: rgb(187 247 208 / var(--tw-bg-opacity));
@@ -1589,6 +1629,21 @@ button {
 .bg-green-600 {
   --tw-bg-opacity: 1;
   background-color: rgb(22 163 74 / var(--tw-bg-opacity));
+}
+
+.bg-log-info {
+  --tw-bg-opacity: 1;
+  background-color: rgb(23 162 184 / var(--tw-bg-opacity));
+}
+
+.bg-orange-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 215 170 / var(--tw-bg-opacity));
+}
+
+.bg-red-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 202 202 / var(--tw-bg-opacity));
 }
 
 .bg-red-600 {
@@ -1674,6 +1729,11 @@ button {
   padding-right: 4rem;
 }
 
+.px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
 .px-20 {
   padding-left: 5rem;
   padding-right: 5rem;
@@ -1740,6 +1800,11 @@ button {
   line-height: 1.75rem;
 }
 
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
 .font-bold {
   font-weight: 700;
 }
@@ -1748,8 +1813,16 @@ button {
   font-weight: 500;
 }
 
+.font-semibold {
+  font-weight: 600;
+}
+
 .uppercase {
   text-transform: uppercase;
+}
+
+.italic {
+  font-style: italic;
 }
 
 .lining-nums {
@@ -1767,6 +1840,11 @@ button {
   color: rgb(22 163 74 / var(--tw-text-opacity));
 }
 
+.text-green-800 {
+  --tw-text-opacity: 1;
+  color: rgb(22 101 52 / var(--tw-text-opacity));
+}
+
 .text-neutral-100 {
   --tw-text-opacity: 1;
   color: rgb(245 245 245 / var(--tw-text-opacity));
@@ -1775,6 +1853,11 @@ button {
 .text-red-600 {
   --tw-text-opacity: 1;
   color: rgb(220 38 38 / var(--tw-text-opacity));
+}
+
+.text-red-700 {
+  --tw-text-opacity: 1;
+  color: rgb(185 28 28 / var(--tw-text-opacity));
 }
 
 .text-sky-500 {
@@ -1835,6 +1918,15 @@ button {
   cursor: pointer;
 }
 
+.hover\:bg-orange-300:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(253 186 116 / var(--tw-bg-opacity));
+}
+
+.hover\:opacity-80:hover {
+  opacity: 0.8;
+}
+
 .disabled\:opacity-40:disabled {
   opacity: 0.4;
 }
@@ -1864,10 +1956,6 @@ button {
 }
 
 @media not all and (min-width: 1024px) {
-  .max-lg\:fixed {
-    position: fixed;
-  }
-
   .max-lg\:mx-10 {
     margin-left: 2.5rem;
     margin-right: 2.5rem;
@@ -1879,6 +1967,10 @@ button {
 
   .max-lg\:w-auto {
     width: auto;
+  }
+
+  .max-lg\:w-full {
+    width: 100%;
   }
 
   .max-lg\:-translate-y-2 {
@@ -1942,6 +2034,10 @@ button {
 
   .max-md\:text-\[10px\] {
     font-size: 10px;
+  }
+
+  .max-md\:text-\[16px\] {
+    font-size: 16px;
   }
 
   .group.is-login .max-md\:group-\[\.is-login\]\:hidden {
@@ -2030,6 +2126,10 @@ button {
 }
 
 @media (min-width: 768px) {
+  .md\:w-auto {
+    width: auto;
+  }
+
   .md\:gap-x-2 {
     -moz-column-gap: 0.5rem;
          column-gap: 0.5rem;

@@ -7,9 +7,9 @@ import (
 
 var usernameKey string = "username"
 var noteIDKey string = "note-id"
-var titleKey string = "title"
+var titleKey string = "diary-topic"
 var diaryTypeKey string = "diary-type"
-var detailKey string = "detail"
+var detailKey string = "diary-detail"
 
 type noteAccessController struct {
 	noteSrvI services.NoteService
