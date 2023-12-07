@@ -8,6 +8,7 @@ module.exports = {
         'bitter-chocolate': '#503130',
         'brown-coffee': '#4F2C22',
         'gainsboro': '#DFE0DF',
+        'log-info' : '#17a2b8',
         'khaki': '#B8A99A',
         'medium-aquamarine': '#60D5A3',
         'melon': '#FFC0B8',

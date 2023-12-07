@@ -49,7 +49,8 @@
 
     #sign-in-box, 
     #log-in-box, 
-    #upload-img-box {
+    #upload-img-box,
+    #forget-pwd-box {
         @apply
         h-auto
         py-10
@@ -191,7 +192,7 @@
 
     .note-submit-btn,
     .sign-in-submit-btn, .log-in-submit-btn,
-    .upload-submit-btn {
+    .upload-submit-btn, .forget-password-btn {
         @apply
         w-auto
         max-lg:w-full

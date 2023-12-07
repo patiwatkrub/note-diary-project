@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/patiwatkrub/note-diary-project/back-end/domains"
 	"github.com/patiwatkrub/note-diary-project/back-end/errs"
@@ -267,31 +269,80 @@ func (user *userAccessService) CheckEmail(email string) (err error) {
 	return nil
 }
 
-func (user *userAccessService) ResetPassword(email, newPassword string) (*UserResponse, error) {
+func (user *userAccessService) PreResetPassword(email, newPassword string) error {
+	fromAccount := "patiwatkongram@gmail.com"
+	topic := "Note-diary Reset Password"
+
+	readFile, err := os.ReadFile("public/reset-pwd-confirmation.html")
+	if err != nil {
+		logs.Error(err)
+		errS := errs.NewInternalServerError()
+		return errS
+	}
+
+	expireTime := time.Now().UnixMilli()
+	expireTimePlus := expireTime + (60 * 5 * 1000)
+	expireTimeStr := strconv.Itoa(int(expireTimePlus))
+
+	manualMappingPageStr := strings.ReplaceAll(string(readFile), "{{.Email}}", email)
+	manualMappingPageStr = strings.ReplaceAll(manualMappingPageStr, "{{.NewPassword}}", newPassword)
+	manualMappingPageStr = strings.ReplaceAll(manualMappingPageStr, "{{.Timestamp}}", expireTimeStr)
+
+	user.mailer.SetAddress(email)
+	user.mailer.SetContext(fromAccount, topic, manualMappingPageStr)
+	if err = user.mailer.SendMail(); err != nil {
+		logs.Error(err)
+		errS := errs.NewInternalServerError()
+		return errS
+	}
+
+	return nil
+}
+
+func (user *userAccessService) ResetPassword(email, newPassword, timestamp string) error {
+
+	if email == "" || newPassword == "" || timestamp == "" {
+		logs.Error("Input is empty.")
+		errS := errs.NewBadRequest()
+		return errS
+	}
+
+	convTimestamp, err := strconv.ParseInt(timestamp, 10, 64)
+	if err != nil {
+		logs.Error(err)
+		errS := errs.NewInternalServerError()
+		return errS
+	}
+
+	now := time.Now().UnixMilli()
+	if now > convTimestamp {
+		logs.Error("a Session Expired")
+		errS := errs.NewSessionExpired()
+		return errS
+	}
+
 	encyptPassword, err := utility.EncyptPassword(newPassword)
 	if err != nil {
 		logs.Error(err)
 		errS := errs.NewInternalServerError()
-		return nil, errS
+		return errS
 	}
 
 	getUser, err := user.userDBI.ResetPassword(email, encyptPassword)
 	if err != nil {
 		logs.Error(err)
 		errS := errs.NewInternalServerError()
-		return nil, errS
+		return errS
 	}
 
-	decodedResult, err := base64.StdEncoding.DecodeString(getUser.Img_Profile)
+	_, err = base64.StdEncoding.DecodeString(getUser.Img_Profile)
 	if err != nil {
 		logs.Error(err)
 		errS := errs.NewInternalServerError()
-		return nil, errS
+		return errS
 	}
-
-	aUser := NewUserResponse(getUser.Username, "password", getUser.Email, string(decodedResult))
-
-	return aUser, nil
+	
+	return nil
 }
 
 func (user *userAccessService) ChangePassword(username, password, newPassword string) (*UserResponse, error) {
@@ -487,14 +538,13 @@ func (user *userAccessService) DeleteUser(username string) (err error) {
 	var errS errs.CustomError
 
 	err = user.userDBI.Delete(username)
-	
+
 	if err != nil {
 		logs.Error(err)
 		errS = errs.NewInternalServerError()
 
 		return errS
 	}
-	
 
 	return nil
 }

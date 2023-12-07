@@ -192,13 +192,17 @@ func (user *userAccessController) Verify(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Redirect(301, "http://notediary:8080/public/homepage.html")
+	ctx.HTML(200, "status-report.html", gin.H{
+		"title":   "Email Verification Successfully.",
+		"message": username + " has been Verification",
+	})
 }
 
 func (user *userAccessController) CheckEmail(ctx *gin.Context) {
-	email := ctx.PostForm("verify-email")
+	email := ctx.PostForm("check-email")
 
 	err := user.userSRVI.CheckEmail(email)
+
 	if err != nil {
 		ControllerError(ctx, err)
 		return
@@ -207,19 +211,42 @@ func (user *userAccessController) CheckEmail(ctx *gin.Context) {
 	ctx.Status(200)
 }
 
-func (user *userAccessController) ResetPassword(ctx *gin.Context) {
-	email := ctx.PostForm("verify-email")
-	resetPwd := ctx.PostForm("reset-password")
+func (user *userAccessController) GetResetPassword(ctx *gin.Context) {
+	email := ctx.Query("email")
+	newPwd := ctx.Query("new-password")
+	timestamp := ctx.Query("timestamp")
 
-	aUser, err := user.userSRVI.ResetPassword(email, resetPwd)
+	err := user.userSRVI.ResetPassword(email, newPwd, timestamp)
+	if err != nil && err.Error() == "Session is expired" {
+		ctx.HTML(200, "status-report.html", gin.H{
+			"title":   "Session expired.",
+			"message": "Please, try it again.",
+		})
+		return
+	}
+
 	if err != nil {
 		ControllerError(ctx, err)
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"success": aUser,
+	ctx.HTML(200, "status-report.html", gin.H{
+		"title":   "Reset Password Successfully.",
+		"message": "Congratulation, you will enable login with new password. Go to try it!",
 	})
+}
+
+func (user *userAccessController) PostResetPassword(ctx *gin.Context) {
+	email := ctx.PostForm("check-email")
+	resetPwd := ctx.PostForm("reset-password")
+
+	err := user.userSRVI.PreResetPassword(email, resetPwd)
+	if err != nil {
+		ControllerError(ctx, err)
+		return
+	}
+
+	ctx.Status(200)
 }
 
 func (user *userAccessController) ChosenEditProfile(ctx *gin.Context) {

@@ -46,11 +46,11 @@ export class InformationBox {
         this.#getTheme(level);
 
         this.#informationBox.addEventListener("click", () => {
-            this.#removeBox()
+            this.#removeBox();
         });
 
         this.#informationBox.addEventListener("animationend", () => {
-            this.#removeBox()
+            this.#removeBox();
         });
         
         this.#informationBox.onmouseenter = () => {
@@ -74,7 +74,7 @@ export class InformationBox {
         `;
         informationBoxStack.appendChild(this.#informationBox);
     }
-
+    
     #removeBox() {
         informationBoxStack.removeChild(this.#informationBox);
     }

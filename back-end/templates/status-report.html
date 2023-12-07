@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="http://notediary:8081/public/icon/logo-icon-32px.png" type="image/x-icon">
+    <title>NOTE DIARY PROJECT</title>
+    <style>
+        .container {
+            margin: 10%;
+        }
+
+        .font {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        .content-box {
+            background-color: rgb(248,247,247);
+            padding: 20px;
+            margin: auto;
+            font-size: larger;
+            font-weight: 400;
+            border-style: solid;
+            border-width: 10px;
+            border-left-color: rgb(107, 255, 251);
+            border-top-color: rgb(244, 111, 95);
+            border-right-color: rgb(49, 193, 20 );
+            border-bottom-color: gainsboro;
+        }
+
+        .content-box > .title {
+            padding: 12px;
+            margin: auto;
+            width: auto;
+            color: rgb(242, 242, 242);
+            background: rgb(0, 142, 189);
+            background: linear-gradient(90deg, rgb(0, 225, 255) 5%, rgba(58, 173, 173, 0.989) 50%, rgb(0, 255, 238) 100%);
+        }
+
+        .content-box > .content-message {
+            margin-top: -5px;
+            padding: 10px 25px;
+            font-size: medium;
+            background-color: rgb(253, 255, 249 );
+        }
+
+        .email,
+        .github {
+            text-decoration: none;
+            color: white;
+        }
+
+        .tel {
+            text-decoration: none;
+            background-color: black;
+            color: black;
+        }
+
+        .icon {
+            display: inline-flex;
+            width: 20px;
+            height: 20px;
+        }
+
+        .footer {
+            background-color: rgb(59,60,58);
+            font-size: 80%;
+            font-weight: 200;
+            color: whitesmoke;
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content-box font">
+            <div class="title">{{ .title }}</div>
+            <div class="content-message">
+                <p id="content">{{ .message }}</p>
+                <p><a href="http://notediary:8080/public/homepage.html">Back to Homepage</a></p>
+            </div>
+        </div>
+        <div class="footer font">
+            <div>
+                <span class="uppercase"><i>Copyright&copy;</i></span><br>
+                <span>
+                    Email &#9993;: <a class="email" href="mailto:Patiwatkrubst@hotmail.com">Patiwatkrubst@hotmail.com</a>
+                </span><br>
+                <span>Github</span> 
+                <span>
+                    <img class="icon" src="https://cdn-icons-png.flaticon.com/24/2111/2111374.png" alt="github-icon"> 
+                </span>
+                <span> 
+                    : <a class="github" target="_blank">github.com/patiwatkrub/note-diary-project</a> 
+                </span><br>
+                <span>
+                    Tel &#9743;: <a class="tel" href="tel:098-2838-104">098-2838-104</a>
+                </span> 
+            </div>
+        </div>
+    </div>
+</body>
+</html>

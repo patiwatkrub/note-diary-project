@@ -127,6 +127,15 @@ func NewUserDeleted() CustomError {
 	}
 }
 
+// Error: Verify expire of Request Reset Password is timeout
+func NewSessionExpired() CustomError {
+	return CustomError{
+		StatusCode:   408,
+		ErrorHeader:  "Request Timeout",
+		ErrorMessage: "Session is expired",
+	}
+}
+
 // Error: Can not find an Author in User table to create note
 func NewCreateNoteWithAuthorNotExist() CustomError {
 	return CustomError{

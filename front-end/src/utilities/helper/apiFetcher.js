@@ -4,6 +4,7 @@ import { loadingBox } from "../../components/subcomponents/loadingBox.js";
 import { signInForm, toggleSignInModalBox } from "../signInForm.js";
 import { loginForm, toggleLogInModalBox, closeLogInBox } from "../logInForm.js";
 import { uploadIMGForm } from "../uploadImgForm.js";
+import { forgetPWDForm, logParagraph } from "../forgetPWDForm.js";
 import { profileSubmitter } from "../profileSubmitter.js";
 import { userSingleton } from "./user.js";
 import { escapeHtml } from "./escapeHTML.js";
@@ -207,6 +208,56 @@ function extendTime() {
     xhr.send();
 }
 
+function checkEmailAPI() {
+    
+    return new Promise((resolve) => {
+        const xhr = new XMLHttpRequest();
+        const formData = new FormData(forgetPWDForm);
+
+        xhr.onload = () => {
+            const statusCode = xhr.status;
+            switch (statusCode) {
+                case 200 :
+                    resolve("200");
+                    break;
+                case 404 : 
+                    resolve("404");
+                    break;
+                case 500 :
+                    resolve("500");
+                    break;
+            }
+            
+        }
+
+        xhr.open("POST", `http://notediary:8081/api/check-email`);
+
+        xhr.send(formData);
+    });
+
+}
+
+function requestResetPWDAPI() {
+
+    return new Promise((resolve) => {
+        const xhr = new XMLHttpRequest()
+        const formData = new FormData(forgetPWDForm);
+
+        xhr.onload = () => {
+            resolve(1);
+        }
+
+        xhr.open("POST", `http://notediary:8081/api/reset-password`, true);
+
+        xhr.setRequestHeader(`Multipart`, `multipart/form-data`);
+        xhr.responseType = 'json';
+
+        xhr.send(formData);
+    });
+    
+
+}
+
 function getNoteData(issuer, callback){
     if (location.href == "http://notediary:8080/public/profile.html") return
 
@@ -396,4 +447,4 @@ function hideLoadingBox() {
     loadingBox.classList.remove('flex', 'flex-row');
 }
 
-export { signIn, login, getUserData, getNoteData, uploadImgProfileAPI, editProfileAPI, extendTime, logout, deleteUserAPI };
+export { signIn, login, getUserData, checkEmailAPI, requestResetPWDAPI, getNoteData, uploadImgProfileAPI, editProfileAPI, extendTime, logout, deleteUserAPI };

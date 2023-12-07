@@ -31,6 +31,7 @@ func main() {
 
 	router := gin.Default()
 	router.Static("/public", "./public/img/")
+	router.LoadHTMLFiles("templates/status-report.html")
 
 	// Set a lower memory limit for multipart forms (default is 32 MiB)
 	// 8 MiB
@@ -44,8 +45,11 @@ func main() {
 
 	// localhost:8080/note-diary-api -> notediary:8081/api
 	api := router.Group("/api")
+
 	api.POST("/check-email", userAccessController.CheckEmail)
-	api.POST("/reset-password", userAccessController.ResetPassword)
+
+	api.GET("/reset-password", userAccessController.GetResetPassword)
+	api.POST("/reset-password", userAccessController.PostResetPassword)
 
 	// localhost:8080/note-diary-api/admin -> notediary:8081/api/admin
 	admin := api.Group("/admin", middleware.RoleAdmin)
