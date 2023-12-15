@@ -664,18 +664,6 @@ button {
   padding: 1.25rem;
 }
 
-/* Can not understand this line below setting for? */
-
-/* #sign-in-box {
-        @apply
-        w-8;
-    }
-
-    #log-in-box {
-        @apply
-        w-5;
-    } */
-
 .header-box {
   display: flex;
   padding-left: 5rem;
@@ -949,20 +937,21 @@ button {
   padding: 1.25rem;
 }
 
-.note-diary-content-img-bg {
-  border-radius: 0.5rem;
-  --tw-bg-opacity: 1;
-  background-color: rgb(242 180 109 / var(--tw-bg-opacity));
-  background-size: cover;
-  background-attachment: scroll;
-  background-position: center;
-  background-repeat: repeat-y;
-  background-origin: content-box;
-  background-blend-mode: soft-light;
-}
+/* .note-diary-content-img-bg {
+        @apply
+        bg-scroll
+        bg-auto
+        bg-center
+        bg-no-repeat
+        bg-origin-content
+        bg-blend-soft-light 
+        bg-middle-yellow-red
+        rounded-lg;
+    } */
 
 .note-diary-form {
   margin: 0.5rem;
+  height: auto;
   width: 100%;
 }
 
@@ -984,6 +973,7 @@ button {
   margin-left: 0.5rem;
   height: 30px;
   width: 100%;
+  padding: 0.25rem;
 }
 
 .note-diary-form-summit-box {
@@ -1162,7 +1152,6 @@ button {
   width: 100%;
   flex-direction: column;
   row-gap: 0.75rem;
-  overflow-y: scroll;
 }
 
 .diary-box {
@@ -1191,6 +1180,61 @@ button {
   bottom: 1rem;
   font-size: 0.875rem;
   line-height: 1.25rem;
+}
+
+#todo-list-tasks {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+}
+
+.todo-list-task {
+  display: flex;
+  height: auto;
+  width: 100%;
+  flex-direction: row;
+  border-radius: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 215 170 / var(--tw-bg-opacity));
+  padding: 0.5rem;
+  text-align: center;
+  opacity: 0.75;
+}
+
+.todo-list-task:hover {
+  opacity: 0.95;
+}
+
+.todo-list-task-context {
+  flex-basis: 75%;
+  -webkit-hyphens: auto;
+          hyphens: auto;
+  padding: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.todo-list-task-btn {
+  height: 1.25rem;
+  width: 80px;
+  flex-basis: 25%;
+  align-self: center;
+  border-radius: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(220 38 38 / var(--tw-bg-opacity));
+  padding: 0.125rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  --tw-text-opacity: 1;
+  color: rgb(252 165 165 / var(--tw-text-opacity));
+}
+
+.todo-list-task-btn:hover {
+  cursor: pointer;
+}
+
+.static {
+  position: static;
 }
 
 .fixed {
@@ -1260,6 +1304,11 @@ button {
   margin-bottom: 0.25rem;
 }
 
+.my-2 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
 .mb-2 {
   margin-bottom: 0.5rem;
 }
@@ -1274,6 +1323,10 @@ button {
 
 .mr-1 {
   margin-right: 0.25rem;
+}
+
+.mr-3 {
+  margin-right: 0.75rem;
 }
 
 .mr-8 {
@@ -1312,10 +1365,6 @@ button {
   display: inline-flex;
 }
 
-.grid {
-  display: grid;
-}
-
 .hidden {
   display: none;
 }
@@ -1352,6 +1401,18 @@ button {
   height: 100%;
 }
 
+.h-\[100px\] {
+  height: 100px;
+}
+
+.h-\[350px\] {
+  height: 350px;
+}
+
+.h-\[300px\] {
+  height: 300px;
+}
+
 .w-24 {
   width: 6rem;
 }
@@ -1362,10 +1423,6 @@ button {
 
 .w-5 {
   width: 1.25rem;
-}
-
-.w-\[100\%\] {
-  width: 100%;
 }
 
 .w-\[140px\] {
@@ -1534,6 +1591,10 @@ button {
   gap: 0.25rem;
 }
 
+.gap-4 {
+  gap: 1rem;
+}
+
 .gap-x-2 {
   -moz-column-gap: 0.5rem;
        column-gap: 0.5rem;
@@ -1660,6 +1721,11 @@ button {
   background-color: transparent;
 }
 
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
 .bg-yellow-400 {
   --tw-bg-opacity: 1;
   background-color: rgb(250 204 21 / var(--tw-bg-opacity));
@@ -1739,6 +1805,11 @@ button {
   padding-right: 5rem;
 }
 
+.px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
 .px-4 {
   padding-left: 1rem;
   padding-right: 1rem;
@@ -1752,6 +1823,11 @@ button {
 .py-16 {
   padding-top: 4rem;
   padding-bottom: 4rem;
+}
+
+.py-3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
 }
 
 .pb-5 {
@@ -1873,6 +1949,10 @@ button {
 .text-yellow-400 {
   --tw-text-opacity: 1;
   color: rgb(250 204 21 / var(--tw-text-opacity));
+}
+
+.opacity-100 {
+  opacity: 1;
 }
 
 .opacity-20 {
@@ -2045,6 +2125,14 @@ button {
   }
 }
 
+@container (min-width: 500px) {
+  @media not all and (min-width: 768px) {
+    .\@\[500px\]\:max-md\:h-\[300px\] {
+      height: 300px;
+    }
+  }
+}
+
 @media not all and (min-width: 640px) {
   .max-sm\:absolute {
     position: absolute;
@@ -2122,6 +2210,55 @@ button {
 
   .max-sm\:p-6 {
     padding: 1.5rem;
+  }
+}
+
+@container (min-width: 500px) {
+  @media not all and (min-width: 640px) {
+    .\@\[500px\]\:max-sm\:h-\[300px\] {
+      height: 300px;
+    }
+  }
+}
+
+@media (min-width: 640px) {
+  @media not all and (min-width: 1024px) {
+    .sm\:max-lg\:col-span-2 {
+      grid-column: span 2 / span 2;
+    }
+
+    .sm\:max-lg\:mr-0 {
+      margin-right: 0px;
+    }
+
+    .sm\:max-lg\:grid {
+      display: grid;
+    }
+
+    .sm\:max-lg\:grid-rows-2 {
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+    }
+
+    .sm\:max-lg\:px-0 {
+      padding-left: 0px;
+      padding-right: 0px;
+    }
+  }
+
+  @media not all and (min-width: 768px) {
+    .sm\:max-md\:h-\[300px\] {
+      height: 300px;
+    }
+  }
+}
+
+@container (min-width: 20rem) {
+  @media (min-width: 640px) {
+    @media not all and (min-width: 768px) {
+      .\@xs\:sm\:max-md\:h-\[300px\] {
+        height: 300px;
+      }
+    }
   }
 }
 

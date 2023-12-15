@@ -1,22 +1,26 @@
 import { linkExpandDescription, linkMinimizeDescription, expand, minimize, initializeDescriptionControl } from "../../utilities/descriptionControl.js";
+import { diaryForm,  getDiaryTopic, getDiaryType, getDiaryDetailContent } from "../../utilities/diaryForm.js";
 
-let diaryForm = document.querySelector('#diary-form');
+const taskListBox = document.querySelector('#diaries');
+
+if (taskListBox.children.length == 0) {
+    taskListBox.classList.remove("overflow-y-scroll");
+    taskListBox.parentElement.classList.replace("opacity-100", "opacity-70");
+//     taskListBox.innerHTML = `No Content`;
+} else {
+    taskListBox.classList.add("overflow-y-scroll");
+    taskListBox.parentElement.classList.replace("opacity-70", "opacaty-100");
+}
 
 function NewDiary(e) {
     e.preventDefault()
 
-    let topic = document.querySelector('#diary-topic');
-    let noteType = document.querySelector('input[name="diary-type"]:checked');
-    let detail = document.querySelector('#diary-detail');
+    let noteType = getDiaryType();
 
-    console.log("new diary work...");
-    console.log("topic:", topic.value);
-    // console.log("note type:", diaryNote, diaryNote.value);
-    // console.log("todo type:", todoList, todoList.value);
-    // console.log("note type:", diaryNote.value);
-    // console.log("todo type:", todoList.value);
-    console.log("diary-type:", noteType.value);
-    console.log("detail:\n", detail.value);
+    console.log("New diary...");
+    console.log("Topic:", getDiaryTopic());
+    console.log("Diary Type:", noteType);
+    console.log("detail:\n", getDiaryDetailContent(noteType));
 
 } 
 function toggleDiaryForm() {
