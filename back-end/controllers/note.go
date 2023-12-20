@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/patiwatkrub/note-diary-project/back-end/services"
 )
@@ -23,6 +25,7 @@ func (note *noteAccessController) MakeNote(ctx *gin.Context) {
 	author := ctx.Param(usernameKey)
 
 	title := ctx.PostForm(titleKey)
+
 	diaryType := ctx.PostForm(diaryTypeKey)
 	detail := ctx.PostForm(detailKey)
 
@@ -76,6 +79,7 @@ func (note *noteAccessController) EditNote(ctx *gin.Context) {
 	noteID := ctx.Param(noteIDKey)
 
 	title := ctx.PostForm(titleKey)
+	fmt.Println(title)
 	diaryType := ctx.PostForm(diaryTypeKey)
 	detail := ctx.PostForm(detailKey)
 

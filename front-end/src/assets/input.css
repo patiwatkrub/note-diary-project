@@ -192,6 +192,17 @@
         bg-medium-aquamarine;
     }
 
+    .note-clear-btn {
+        @apply
+        w-auto
+        max-lg:w-full
+        -translate-x-2
+        translate-y-4
+        text-center
+        rounded-md
+        bg-yellow-300;
+    }
+
     .forgot-password-btn {
         @apply
         w-full
@@ -453,6 +464,7 @@
 
     .diary-box {
         @apply
+        relative
         grid
         grid-rows-3
         gap-y-2

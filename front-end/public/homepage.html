@@ -21,7 +21,7 @@
                                 alt="How to use Icon"></a> :</b>
                 </p>
                 <div class="box-border-theme note-diary-content-items mt-10 mx-8 text-justify max-sm:mx-auto group is-login">
-                    <form id="diary-form" class="relative note-diary-form">
+                    <form id="diary-form" class="relative note-diary-form" data-action="make">
                         <div class="flex note-diary-form-items">
                             <label class="note-diary-topic-label" for="diary-topic"><b>Topic :</b></label>
                             <input class="note-diary-topic-input" type="text" name="diary-topic" id="diary-topic" autocomplete="off" disabled>
@@ -29,31 +29,18 @@
                         <div class="note-diary-form-items w-auto">
                             <label class="note-diary-form-labels pl-3" for="diary-type"><b>Type :</b></label><br>
                             <div class="px-10">
-                                <input type="radio" name="diary-type" id="diary-note" value="diaryNote" required disabled>
+                                <input type="radio" name="diary-type" id="diary-note" value="0" required disabled>
                                 <label for="diary-note">Diary note</label><br>
                             </div>
                             <div class="px-10">
-                                <input type="radio" name="diary-type" id="todo-list" value="todoList" required disabled>
+                                <input type="radio" name="diary-type" id="todo-list" value="1" required disabled>
                                 <label for="todo-list">Todo List</label>
                             </div>
                         </div>
                         <div class="note-diary-form-items">
                             <label class="block note-diary-form-labels" for="diary-detail"><b>Detail :</b></label>
                             <div id="todo-list-box" class="hidden w-full">
-                                <div id="todo-list-tasks">
-                                    <!-- <div class="todo-list-task">
-                                        <p class="todo-list-task-context">Task 1</p>
-                                        <span class="todolist-task-btn"><i class="fa fa-trash"></i></span>
-                                    </div>
-                                    <div class="todo-list-task">
-                                        <p class="todo-list-task-context">Task 2</p>
-                                        <span class="todolist-task-btn"><i class="fa fa-trash"></i></span>
-                                    </div>
-                                    <div class="todo-list-task">
-                                        <p class="todo-list-task-context">Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem, accusantium.</p>
-                                        <d class="todolist-task-btn"><i class="fa fa-trash"></i></d>
-                                    </div> -->
-                                </div>
+                                <div id="todo-list-tasks"></div>
                                 <div class="flex flex-row gap-4 py-3 w-full text-xs text-center sm:max-lg:grid sm:max-lg:grid-rows-2">
                                     <label class="px-3 sm:max-lg:px-0" for="todo-list-input">Task</label>
                                     <input class="flex-1 w-auto h-5 p-1 mr-3 rounded-lg sm:max-lg:mr-0" id="todo-list-input" type="text" name="todo-list-input" role="presentation">
@@ -65,108 +52,17 @@
                         </div>
                         <div class="note-diary-form-summit-box">
                             <button class="note-submit-btn w-auto px-4 py-1 disabled:opacity-40" type="submit" disabled>Save</button>
+                            <button class="note-clear-btn w-auto px-4 py-1 disabled:opacity-40" type="button" disabled>Clear</button>
                         </div>
                     </form>
                 </div>
             </div>
             <div class="relative note-diary-content-2 max-sm:order-2">
-                <!-- <div class="box-border-theme note-diary-content-items note-diary-content-img-bg mx-auto m-10"> -->
                 <div class="box-border-theme note-diary-content-items mx-auto m-10 opacity-100">
                     <p class="absolute note-diary-title-2">
                         <b>List :</b>
                     </p>
                     <ul id="diaries" class="overflow-y-scroll">
-                        <!-- <diary-box note-id="edas-456a-5zxc" diary-type="diaryNote">
-                            <span slot="diary-topic">Topic 1</span>
-                            <p slot="diary-detail">Detail 1</p>
-                        </diary-box>
-                        <diary-box note-id="edas-456a-5zxc" diary-type="todoList">
-                            <span slot="diary-topic">Topic 2</span>
-                            <ul slot="diary-detail">{"TodoList":[{"Task":"Take a bath","IsDone": false},{"Task":"Fill pet food","IsDone":false}]}</ul>
-                        </diary-box> -->
-
-                        <!-- <li class="diary-box">
-                            <h3 class="row-span-1 p-2 text-left">
-                                <b>Topic:</b> 
-                                <p class="break-words">Task-content [Prototype: Diary]</p>
-                            </h3>
-                            <div class="row-span-2 p-2 w-auto h-auto text-justify text-ellipsis break-all overflow-hidden">
-                                <b>Detail:</b><br>
-                                <p class="indent-4">
-                                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quia ad fugiat velit totam, omnis eaque alias pariatur necessitatibus asperiores neque perferendis, corrupti quo mollitia architecto veritatis deserunt consequatur, soluta fuga. Ullam excepturi in culpa ex! Atque praesentium esse laudantium autem ut, omnis quisquam nisi quaerat inventore repudiandae ipsa fugit sed, perferendis laborum adipisci, velit ad aliquam saepe. Veniam, in dicta ea ratione possimus corporis nulla voluptatum facilis, temporibus esse molestias vitae impedit sequi sed nostrum. Quia est suscipit iste temporibus! Quibusdam ratione excepturi minima at porro dolorem, esse vel laborum! Perferendis vel pariatur, architecto ab ullam accusantium amet consectetur animi.
-                                </p>
-                            </div>
-                        </li>
-                        <li class="diary-box">
-                            <h3 class="row-span-1 p-2 text-left">
-                                <b>Topic:</b> 
-                                <p class="break-words">Task-content [Prototype: Todo List]</p>
-                            </h3>
-                            <div class="row-span-2 p-2 w-auto h-auto text-justify text-ellipsis break-all overflow-y-scroll">
-                                <b>Detail:</b><br>
-                                <ul class="list-inside ml-5">
-                                    <li data-done="false" class="data-[done=true]:list-image-checkmark data-[done=true]:hover:list-image-uncheckmark_gif data-[done=false]:hover:list-image-checkmark_gif">
-                                        Task1
-                                    </li>
-                                    <li data-done="true" class="data-[done=true]:list-image-checkmark data-[done=true]:hover:list-image-uncheckmark_gif data-[done=false]:hover:list-image-checkmark_gif">
-                                        Task2
-                                    </li>
-                                    <li data-done="true" class="data-[done=true]:list-image-checkmark data-[done=true]:hover:list-image-uncheckmark_gif data-[done=false]:hover:list-image-checkmark_gif">
-                                        Task3
-                                    </li>
-                                    <li data-done="false" class="data-[done=true]:list-image-checkmark data-[done=true]:hover:list-image-uncheckmark_gif data-[done=false]:hover:list-image-checkmark_gif">
-                                        Task4
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="diary-box">
-                            <h3 class="row-span-1 p-2 text-left">
-                                <b>Topic:</b> 
-                                <p class="break-words">Task-content [Prototype: Diary]</p>
-                            </h3>
-                            <div class="row-span-2 p-2 w-auto h-auto text-justify text-ellipsis break-all overflow-hidden">
-                                <b>Detail:</b><br>
-                                <p class="indent-4">
-                                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quia ad fugiat velit totam, omnis eaque alias pariatur necessitatibus asperiores neque perferendis, corrupti quo mollitia architecto veritatis deserunt consequatur, soluta fuga. Ullam excepturi in culpa ex! Atque praesentium esse laudantium autem ut, omnis quisquam nisi quaerat inventore repudiandae ipsa fugit sed, perferendis laborum adipisci, velit ad aliquam saepe. Veniam, in dicta ea ratione possimus corporis nulla voluptatum facilis, temporibus esse molestias vitae impedit sequi sed nostrum. Quia est suscipit iste temporibus! Quibusdam ratione excepturi minima at porro dolorem, esse vel laborum! Perferendis vel pariatur, architecto ab ullam accusantium amet consectetur animi.
-                                </p>
-                            </div>
-                        </li>
-                        <li class="diary-box">
-                            <h3 class="row-span-1 p-2 text-left">
-                                <b>Topic:</b> 
-                                <p class="break-words">Task-content [Prototype: Diary]</p>
-                            </h3>
-                            <div class="row-span-2 p-2 w-auto h-auto text-justify text-ellipsis break-all overflow-hidden">
-                                <b>Detail:</b><br>
-                                <p class="indent-4">
-                                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quia ad fugiat velit totam, omnis eaque alias pariatur necessitatibus asperiores neque perferendis, corrupti quo mollitia architecto veritatis deserunt consequatur, soluta fuga. Ullam excepturi in culpa ex! Atque praesentium esse laudantium autem ut, omnis quisquam nisi quaerat inventore repudiandae ipsa fugit sed, perferendis laborum adipisci, velit ad aliquam saepe. Veniam, in dicta ea ratione possimus corporis nulla voluptatum facilis, temporibus esse molestias vitae impedit sequi sed nostrum. Quia est suscipit iste temporibus! Quibusdam ratione excepturi minima at porro dolorem, esse vel laborum! Perferendis vel pariatur, architecto ab ullam accusantium amet consectetur animi.
-                                </p>
-                            </div>
-                        </li>
-                        <li class="diary-box">
-                            <h3 class="row-span-1 p-2 text-left">
-                                <b>Topic:</b> 
-                                <p class="break-words">Task-content [Prototype: Todo List]</p>
-                            </h3>
-                            <div class="row-span-2 p-2 w-auto h-auto text-justify text-ellipsis break-all overflow-y-scroll">
-                                <b>Detail:</b><br>
-                                <ul class="list-inside ml-5">
-                                    <li data-done="false" class="data-[done=true]:list-image-checkmark data-[done=true]:hover:list-image-uncheckmark_gif data-[done=false]:hover:list-image-checkmark_gif">
-                                        Task1
-                                    </li>
-                                    <li data-done="true" class="data-[done=true]:list-image-checkmark data-[done=true]:hover:list-image-uncheckmark_gif data-[done=false]:hover:list-image-checkmark_gif">
-                                        Task2
-                                    </li>
-                                    <li data-done="true" class="data-[done=true]:list-image-checkmark data-[done=true]:hover:list-image-uncheckmark_gif data-[done=false]:hover:list-image-checkmark_gif">
-                                        Task3
-                                    </li>
-                                    <li data-done="false" class="data-[done=true]:list-image-checkmark data-[done=true]:hover:list-image-uncheckmark_gif data-[done=false]:hover:list-image-checkmark_gif">
-                                        Task4
-                                    </li>
-                                </ul>
-                            </div>
-                        </li> -->
                     </ul>
                 </div>
             </div>
@@ -195,10 +91,8 @@
     <script src="../src/app.js" type="module" defer="defer"></script>
     <script src="../src/components/pages/homepage.js" type="module"></script>
 </body>
-<!-- set form on select type -->
-<!-- ckeck expire time on JWT -->
+<!-- check expire time on JWT -->
 <!-- 
-    1.make factory note diary
-    2.make note diary's web component
+    1.make factory note diary X -> now got create function
 -->
 </html>

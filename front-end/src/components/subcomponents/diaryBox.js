@@ -1,14 +1,6 @@
-const dumpTodoList = {
-    TodoList:[
-        {
-            "Task":"Take a bath",
-            "IsDone": true 
-        },
-        {
-            "Task":"Fill pet food",
-            "IsDone":true}
-    ]
-}
+import { editNote, deleteNote, getNote } from "../../utilities/helper/apiFetcher.js";
+import { clearDiaryForm, diaries, diaryForm, setDiaryForm } from "../../utilities/diaryForm.js";
+import { InformationBox } from "./informationBox.js";
 
 export class DiaryBox extends HTMLElement {
 
@@ -28,26 +20,132 @@ export class DiaryBox extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ['diary-topic', 'diary-detail']
+        return ['diary-detail']
     }
 
     connectedCallback() {
         this.render();
+
+        this.shadowRoot.querySelector('.diary-edit-btn').addEventListener('click', async () => { 
+            if (this.diaryType == 1) {
+                const logBox = new InformationBox();
+
+                logBox.createBox("info", "Info", `.Sorry, you are edit context only "Diary Note" with "TodoList" can toggle only task for edit`);
+                return;
+            }
+
+            // call get note's API 
+            const note = await getNote(this.noteID);
+
+            setDiaryForm(note);
+        });
+
+        this.shadowRoot.querySelector('.diary-close-btn').addEventListener('click', () => { 
+            console.log(this.noteID + " deleted.");
+            diaries.querySelectorAll('diary-box').forEach( diaryBox => {
+                
+                if (diaryBox.getAttribute('note-id') == this.noteID) {
+                    diaries.removeChild(diaryBox);
+                    
+                    // call delete note's API
+                    deleteNote(this.noteID);
+                }
+            })
+            
+        });
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         // make sure it is mounted first
         if (this.isConnected) {
             switch (name) {
-            case 'diary-topic':
-                this.#diaryTopic = newValue || '';
-                break;
             case 'diary-detail':
                 this.diaryDetail = newValue || '';
+                this.render();
                 break;
             }
-        
-            this.render()
+        }
+    }
+
+    disconnectedCallback() {
+
+        this.shadowRoot.querySelector('.diary-edit-btn').removeEventListener('click', async () => { 
+            if (this.diaryType == 1) {
+                const logBox = new InformationBox();
+
+                logBox.createBox("info", "Info", `.Sorry, you are edit context only "Diary Note" with "TodoList" can toggle only task for edit`);
+                return;
+            }
+
+            const note = await getNote(this.noteID);
+
+            setDiaryForm(note);
+        });
+
+        this.shadowRoot.querySelector('.diary-close-btn').removeEventListener('click', () => { 
+            console.log(this.noteID + " deleted.");
+            diaries.querySelectorAll('diary-box').forEach( diaryBox => {
+                
+                if (diaryBox.getAttribute('note-id') == this.noteID) {
+                    diaries.removeChild(diaryBox);
+
+                    deleteNote(this.noteID);
+                }
+            })
+            
+        });
+
+        if (this.diaryType == 1) {
+            let liEL = this.querySelectorAll('li');
+
+            liEL.forEach( li => {
+
+                li.removeEventListener('click', async (e) => {
+                        
+                    let done = e.target.getAttribute("data-done");
+                    
+                    if (done === "false") {
+                        // Set UI 
+                        e.target.setAttribute("data-done", "true"); 
+                        e.target.querySelector('img').setAttribute("src", "../src/assets/icons/checkmark.png");
+
+                        this.#todoListDetail.TodoList[index].IsDone = true;
+
+                        this.diaryDetail = JSON.stringify(this.#todoListDetail);
+
+                        setDiaryForm({
+                            "NoteID" : this.noteID,
+                            "Title" : this.diaryTopic,
+                            "DiaryType" : this.diaryType,
+                            "Detail": this.diaryDetail
+                        })
+
+                        await editNote(this.noteID);
+
+                        diaryForm.setAttribute('data-action', 'make');
+                        diaryForm.removeAttribute('note-id');
+                        
+                        clearDiaryForm();
+                    }
+                });
+
+                li.removeEventListener('mouseleave', (e) => {
+                        
+                        let done = e.target.getAttribute("data-done");
+                        
+                        if (done === "false") {
+                            li.querySelector("img").style.display = "none";
+                        }
+                });
+
+                li.removeEventListener('mouseenter', (e) => {
+                        let done = e.target.getAttribute("data-done");
+
+                        if (done === "false") {
+                            li.querySelector("img").style.display = "inline";
+                        }
+                    });
+            });
         }
     }
 
@@ -59,7 +157,27 @@ export class DiaryBox extends HTMLElement {
                 font-size : 16px;
             }
 
+            .diary-close-btn {
+                display: inline;
+                position: absolute;
+                height : 20px;
+                right: 5px;
+                top: -20px;
+            }
+
+            .diary-edit-btn {
+                position: absolute;
+                height : 20px;
+                right: 25px;
+                top: -20px;
+            }
+
+            .diary-close-btn:hover, .diary-edit-btn:hover {
+                color : red;
+            }
+            
             h3 {
+                position : relative;
                 text-align : start;
             }
 
@@ -91,6 +209,8 @@ export class DiaryBox extends HTMLElement {
     get diaryNoteTemplate() {
         return `
         <h3>
+            <span class="diary-close-btn"> &cross; </span>
+            <span class="diary-edit-btn"> &#9998; </span>
             <b>Topic:</b><br>
             <slot name="diary-topic">${this.#diaryTopic ? this.#diaryTopic : `<span style="font-weight : 200;">Topic Space</span>`}</slot>
         </h3>
@@ -104,6 +224,8 @@ export class DiaryBox extends HTMLElement {
     get todoListTemplate() {
         return `
         <h3>
+            <span class="diary-close-btn"> &cross; </span>
+            <span class="diary-edit-btn"> &#9998; </span>
             <b>Topic:</b><br>
             <slot name="diary-topic">${this.#diaryTopic ? this.#diaryTopic : `<span style="font-weight : 200;">Topic Space</span>`}</slot>
         </h3>
@@ -118,14 +240,14 @@ export class DiaryBox extends HTMLElement {
     render() {
         this.classList.add("diary-box");
         this.hasAttribute("note-id") ? this.#noteId = this.getAttribute("note-id") : this.#noteId = "";
-        this.hasAttribute("diary-type") ? this.#diaryType = this.getAttribute("diary-type") : this.#diaryType = "";
-        switch (this.#diaryType.toLowerCase()) {
-            case "diarynote" :
+        this.hasAttribute("diary-type") ? this.#diaryType = parseInt(this.getAttribute("diary-type")) : this.#diaryType = -1;
+        switch (this.#diaryType) {
+            case 0 :
                 this.#diaryDetail = this.querySelector(`p[slot="diary-detail"]`).textContent;
                 this.#noteDetail = this.#diaryDetail;
                 this.shadowRoot.innerHTML = `${this.style}${this.diaryNoteTemplate}`;
                 break;
-            case "todolist" :
+            case 1 :
                 // Get slot tap content and convert to object
                 this.#diaryDetail = this.querySelector(`ul[slot="diary-detail"]`).textContent;
                 let convJSON = JSON.parse(this.#diaryDetail);
@@ -149,19 +271,34 @@ export class DiaryBox extends HTMLElement {
 
                 liEl.forEach( (li, index) => {
 
-                    li.addEventListener('click', (e) => {
+                    li.addEventListener('click', async (e) => {
                         
                         let done = e.target.getAttribute("data-done");
                         
                         if (done === "false") {
-                            // Set UI
-                            e.target.setAttribute("data-done", "true");
-                            e.target.querySelector('img').setAttribute("src", "../src/assets/icons/checkmark.png")
+                            // Set UI 
+                            e.target.setAttribute("data-done", "true"); 
+                            e.target.querySelector('img').setAttribute("src", "../src/assets/icons/checkmark.png");
 
-                            // Update field, call api update to db
-                            // console.log(index);
+                            this.#todoListDetail.TodoList[index].IsDone = true;
+
+                            this.diaryDetail = JSON.stringify(this.#todoListDetail);
+
+                            setDiaryForm({
+                                "NoteID" : this.noteID,
+                                "Title" : this.diaryTopic,
+                                "DiaryType" : this.diaryType,
+                                "Detail": this.diaryDetail
+                            })
+
+                            await editNote(this.noteID);
+
+                            diaryForm.setAttribute('data-action', 'make');
+                            diaryForm.removeAttribute('note-id');
+                            
+                            clearDiaryForm();
                         }
-                    })
+                    });
                     
                     li.addEventListener('mouseenter', (e) => {
                         let done = e.target.getAttribute("data-done");
@@ -169,7 +306,7 @@ export class DiaryBox extends HTMLElement {
                         if (done === "false") {
                             li.querySelector("img").style.display = "inline";
                         }
-                    })
+                    });
 
                     li.addEventListener('mouseleave', (e) => {
                         
@@ -178,11 +315,36 @@ export class DiaryBox extends HTMLElement {
                         if (done === "false") {
                             li.querySelector("img").style.display = "none";
                         }
-                    })
+                    });
                 })
                 break;
         }
+
     }
-}
+
+    get noteID() {
+        return this.#noteId;
+    }
+
+    get diaryTopic() {
+        return this.#diaryTopic;
+    }
+
+    get diaryType() {
+        return this.#diaryType;
+    }
+
+    get diaryDetail() {
+        return this.#diaryDetail;
+    }
+
+    set diaryTopic(newTopic) {
+        this.#diaryTopic = newTopic;
+    }
+
+    set diaryDetail(newDetail) {
+        this.#diaryDetail = newDetail;
+    }
+} 
 
 customElements.define('diary-box', DiaryBox);

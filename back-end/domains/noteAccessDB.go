@@ -87,10 +87,6 @@ func (note noteAccessDB) GetNotes(author string) (notes []Note, err error) {
 		return []Note{}, related.Error
 	}
 
-	if related.RowsAffected == 0 {
-		return []Note{}, ErrGetNotesFailed
-	}
-
 	return notes, nil
 }
 

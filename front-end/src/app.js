@@ -8,14 +8,16 @@ import { disableForgetPWDForm, enableForgetPWDForm, forgetPWDFormLogAPI, forgetP
 import { dropdownBtn, dropdownToggle, initializeDropdownControl } from "./utilities/dropdownControl.js";
 import { logInBtn, mobileLogInBtn, logInCloseBtn, loginForm, openLogInBox, closeLogInBox, initializeLogInForm, logOutBtnWins, logOutBtnMoblie } from "./utilities/logInForm.js";
 import { signInBtn, mobileSignInBtn, signInCloseBtn, signInForm, openSignInBox, closeSignInBox,initailizeSignInForm } from "./utilities/signInForm.js";
-import { forgotPWDBtn, forgetPWDBox, forgetPWDCloseBtn, forgetPWDForm, checkEmailInputBox, checkEmailBtn, resetPWD, resetPWDBtn, logParagraph, initializeForgetPasswordForm, toggleForgetPWDBox, closeForgetPWDBox} from "./utilities/forgetPWDForm.js";
+import { forgotPWDBtn, forgetPWDCloseBtn, forgetPWDForm, checkEmailInputBox, checkEmailBtn, initializeForgetPasswordForm, toggleForgetPWDBox, closeForgetPWDBox} from "./utilities/forgetPWDForm.js";
 import { signIn, login, getUserData, getNoteData, extendTime, logout } from "./utilities/helper/apiFetcher.js";
 import { NewDiary, diaryForm, toggleDiaryForm } from "./components/pages/homepage.js";
 import { loadingBox } from "./components/subcomponents/loadingBox.js";
 import { userSingleton } from "./utilities/helper/user.js";
 import { emailPatternChecker } from "./utilities/helper/emailChecker.js";
 import { checkEmailAPI, requestResetPWDAPI } from "./utilities/helper/apiFetcher.js";
+import { createDiaryBox } from "./components/pages/homepage.js";
 import { DiaryBox } from "./components/subcomponents/diaryBox.js";
+import { clearDiaryContextBtn, clearDiaryForm } from "./utilities/diaryForm.js";
 
 body.insertBefore(header, body.firstChild);
 body.appendChild(signInModalBox);
@@ -70,6 +72,7 @@ signInCloseBtn?.addEventListener('click', closeSignInBox);
 forgotPWDBtn?.addEventListener('click', toggleForgetPWDBox);
 forgetPWDCloseBtn?.addEventListener('click', closeForgetPWDBox);
 
+clearDiaryContextBtn?.addEventListener('click', clearDiaryForm);
 diaryForm?.addEventListener('submit', NewDiary);
 
 const user = userSingleton.getInstead();
@@ -96,6 +99,14 @@ async function plugin() {
         if (userData) {
             updateUserData(userData);
             user.logInEvent.call();
+
+            getNoteData(user.authentication.issuer(), (resp) => {
+                if (resp["Notes"] != null) {
+                    resp["Notes"].forEach(task => {
+                        createDiaryBox(task);
+                    })
+                }
+            })
         }
     } catch (err) {
         console.error(err);

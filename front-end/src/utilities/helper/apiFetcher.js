@@ -5,6 +5,7 @@ import { signInForm, toggleSignInModalBox } from "../signInForm.js";
 import { loginForm, toggleLogInModalBox, closeLogInBox } from "../logInForm.js";
 import { uploadIMGForm } from "../uploadImgForm.js";
 import { forgetPWDForm, logParagraph } from "../forgetPWDForm.js";
+import { diaryForm } from "../diaryForm.js";
 import { profileSubmitter } from "../profileSubmitter.js";
 import { userSingleton } from "./user.js";
 import { escapeHtml } from "./escapeHTML.js";
@@ -258,31 +259,6 @@ function requestResetPWDAPI() {
 
 }
 
-function getNoteData(issuer, callback){
-    if (location.href == "http://notediary:8080/public/profile.html") return
-
-    const xhr = new XMLHttpRequest;
-
-    xhr.onload = () => {
-        const statusCode = xhr.status;
-        const response = xhr.response;
-
-        if (statusCode == 200) {
-            callback(response);
-        }
-    }
-
-    xhr.onerror = () => {
-        console.log("can't get note data");
-    }
-
-    xhr.open("GET", `http://notediary:8081/api/user/${issuer}/note/`, true);
-    xhr.withCredentials = true;
-    xhr.responseType = "json";
-
-    xhr.send()
-}
-
 function editProfileAPI() {
 
     const logBox = new InformationBox();
@@ -366,7 +342,7 @@ function uploadImgProfileAPI() {
         xhr.open('POST', `http://notediary:8081/api/user/${issuer}/edit/img-profile`, true);
 
         xhr.withCredentials = true;
-        xhr.responseType = 'json'
+        xhr.responseType = 'json';
         
         xhr.send(formData);
         
@@ -433,8 +409,151 @@ function deleteUserAPI() {
         xhr.open("DELETE", `http://notediary:8081/api/user/${issuer}/delete`, true);
 
         xhr.withCredentials = true;
+        xhr.responseType = 'json';
         xhr.send();
     }) 
+}
+
+function makeNote() {
+
+    const logBox = new InformationBox();
+
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        const issuer = user.authentication.issuer();
+        const formData = new FormData(diaryForm);
+
+        xhr.onload = () => {
+            let statusCode = xhr.status;
+            let response = xhr.response;
+
+            if (statusCode === 201) {
+                resolve(response);
+            }
+        };
+
+        xhr.onerror = () => {
+            reject(logBox.createBox("error", "Unsuccess", "something went wrong"));
+        };
+
+        xhr.open("POST", `http://notediary:8081/api/user/${issuer}/note/create`, true);
+
+        xhr.withCredentials = true;
+        xhr.responseType = 'json';
+        xhr.send(formData);
+    })
+}
+
+function getNote(noteID) {
+    const logBox = new InformationBox();
+
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        const issuer = user.authentication.issuer();
+        
+        xhr.onload = () => {
+            let statusCode = xhr.status;
+            let response = xhr.response;
+
+            if (statusCode === 200) {
+                resolve(response["Note"]);
+            } else {
+                reject(logBox.createBox("error", "Unsuccess", "Internal Server Error"));
+            }
+        }
+
+        xhr.onerror = () => {
+            reject(logBox.createBox("error", "Unsuccess", "something went wrong"));
+        }
+
+        xhr.open("GET", `http://notediary:8081/api/user/${issuer}/note/${noteID}`, true);
+        xhr.withCredentials = true;
+        xhr.responseType = 'json';
+        xhr.send();
+    })
+}
+
+function getNoteData(issuer, callback){
+    if (location.href == "http://notediary:8080/public/profile.html") return
+
+    const xhr = new XMLHttpRequest;
+
+    xhr.onload = () => {
+        const statusCode = xhr.status;
+        const response = xhr.response;
+
+        if (statusCode == 200) {
+            callback(response);
+        } else return;
+    }
+
+    xhr.onerror = () => {
+        console.log("can't get note data");
+    }
+
+    xhr.open("GET", `http://notediary:8081/api/user/${issuer}/note/`, true);
+    xhr.withCredentials = true;
+    xhr.responseType = "json";
+
+    xhr.send()
+}
+
+
+function editNote(noteID) {
+    const logBox = new InformationBox();
+
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        const issuer = user.authentication.issuer();
+        const formData = new FormData(diaryForm);
+
+        xhr.onload = () => {
+            let statusCode = xhr.status;
+            let response = xhr.response;
+            
+            let keys = Object.keys(response);
+            let info = keys[0];
+
+            if (statusCode == 200) {
+                resolve(response["Note"]);
+            } else {
+                reject(logBox.createBox("error", info, response[info]));
+            }
+        }
+
+        xhr.onerror = () => {
+            logBox.createBox("error", "Unsuccess", "something went wrong");
+        }
+
+        xhr.open("PATCH", `http://notediary:8081/api/user/${issuer}/note/${noteID}`, true);
+        xhr.withCredentials = true;
+        xhr.responseType = 'json';
+        xhr.send(formData);
+    })
+}
+
+function deleteNote(noteID) {
+    const logBox = new InformationBox();
+    const xhr = new XMLHttpRequest();
+    const issuer = user.authentication.issuer();
+
+    xhr.onload = () => {
+        const statusCode = xhr.status;
+
+        if (statusCode == 200) {
+            logBox.createBox("success", "Success", `.${noteID} deleted`);
+        } else {
+            logBox.createBox("error", "Error", "Internal Server Error")
+        }
+    }
+
+    xhr.onerror = () => {
+        logBox.createBox("error", "Unsuccess", "something went wrong");
+    }
+
+    xhr.open("DELETE", `http://notediary:8081/api/user/${issuer}/note/${noteID}`);
+    xhr.withCredentials = true;
+    xhr.send();
 }
 
 function showLoadingBox() {
@@ -447,4 +566,4 @@ function hideLoadingBox() {
     loadingBox.classList.remove('flex', 'flex-row');
 }
 
-export { signIn, login, getUserData, checkEmailAPI, requestResetPWDAPI, getNoteData, uploadImgProfileAPI, editProfileAPI, extendTime, logout, deleteUserAPI };
+export { signIn, login, getUserData, checkEmailAPI, requestResetPWDAPI, uploadImgProfileAPI, editProfileAPI, extendTime, logout, deleteUserAPI, makeNote, editNote, getNote, getNoteData, deleteNote };
