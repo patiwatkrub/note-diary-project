@@ -30,7 +30,8 @@ var initialPath string = "/"
 // PS: for set a cookie must use second unix.
 // and then for setting 2 hour with multiply 2 equal 7200,
 // so on testing we use 5 minutes and on production 2 hour,
-var expireTime = 60 * 5
+// var expireTime = 60 * 5
+var expireTime = 60 * 60 * 2
 
 // set secure on cookie. PS: client must must have 'https' or 'ssl cert' for securing
 // true is secure must have https protocol,
