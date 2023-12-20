@@ -73,17 +73,6 @@
         z-10 
     }
 
-    /* Can not understand this line below setting for? */
-    /* #sign-in-box {
-        @apply
-        w-8;
-    }
-
-    #log-in-box {
-        @apply
-        w-5;
-    } */
-
     .header-box {
         @apply
         flex
@@ -203,6 +192,17 @@
         bg-medium-aquamarine;
     }
 
+    .note-clear-btn {
+        @apply
+        w-auto
+        max-lg:w-full
+        -translate-x-2
+        translate-y-4
+        text-center
+        rounded-md
+        bg-yellow-300;
+    }
+
     .forgot-password-btn {
         @apply
         w-full
@@ -306,21 +306,22 @@
         bg-middle-yellow-red;
     }
 
-    .note-diary-content-img-bg {
+    /* .note-diary-content-img-bg {
         @apply
         bg-scroll
-        bg-cover 
+        bg-auto
         bg-center
-        bg-repeat-y
+        bg-no-repeat
         bg-origin-content
         bg-blend-soft-light 
         bg-middle-yellow-red
         rounded-lg;
-    }
+    } */
 
     .note-diary-form {
         @apply
         w-full
+        h-auto
         m-2;
     }
 
@@ -340,7 +341,8 @@
     .note-diary-topic-input {
         @apply
         w-full h-[30px]
-        ml-2;
+        ml-2
+        p-1;
     }
 
     .note-diary-form-summit-box {
@@ -457,12 +459,12 @@
         flex-col
         gap-y-3
         w-full
-        h-[540px]
-        overflow-y-scroll;
+        h-[540px];
     }
 
     .diary-box {
         @apply
+        relative
         grid
         grid-rows-3
         gap-y-2
@@ -481,5 +483,47 @@
         right-3
         bottom-4
         text-sm
+    }
+
+    #todo-list-tasks {
+        @apply
+        flex
+        flex-col
+        gap-y-2
+    }
+
+    .todo-list-task {
+        @apply
+        flex
+        flex-row
+        p-2
+        w-full h-auto
+        bg-orange-200
+        rounded-lg
+        opacity-75
+        hover:opacity-95
+        text-center
+    }
+
+    .todo-list-task-context {
+        @apply
+        basis-3/4
+        p-1
+        text-xs
+        hyphens-auto
+    }
+
+    .todo-list-task-btn {
+        @apply
+        basis-1/4
+        self-center
+        w-[80px]
+        h-5
+        p-0.5
+        text-xs
+        bg-red-600
+        text-red-300
+        rounded-lg
+        hover:cursor-pointer
     }
 }
