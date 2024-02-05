@@ -86,7 +86,7 @@ async function NewDiary(e) {
 } 
 
 function toggleDiaryForm() {
-    if (location.href === "http://notediary:8080/public/profile.html") {
+    if (location.href === "http://notediary:8080/") {
         return;
     }
 

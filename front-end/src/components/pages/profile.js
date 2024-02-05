@@ -100,7 +100,7 @@ if (user.authentication.isLogIn()) {
     userData = user.getUserObject();
     setFormData(userData);
 } else {
-    location.href = 'http://notediary:8080/public/homepage.html';
+    location.href = 'http://notediary:8080/';
 }
 
 function setFormData(userData) {

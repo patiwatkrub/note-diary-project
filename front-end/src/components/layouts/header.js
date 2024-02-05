@@ -30,7 +30,7 @@ header.innerHTML = `
             <strong>{{ .Username }}</strong>
         </span>
         <span class="wins-profile-user-setting-item place-self-end">
-            <a href="./profile.html">
+            <a href="/profile">
                 Setting
             </a>
         </span>
@@ -59,7 +59,7 @@ header.innerHTML = `
                 </div>
             </li>
             <li class="dropdown-menu-elements hidden group-[.is-login]:block">
-                <a href="./profile.html">Setting</a>
+                <a href="/profile">Setting</a>
             </li>
             <li class="dropdown-menu-elements hidden group-[.is-login]:block">
                 <a href="#">Log out</a>

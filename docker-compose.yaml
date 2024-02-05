@@ -1,16 +1,49 @@
 version : '2.10'
 services:
     db:
-        image: postgres:latest
+        image: postgres:15.5
         container_name: notediarydb
         environment:
+            POSTGRES_USER: postgres
             POSTGRES_PASSWORD: p@ssword@pgsql
+            POSTGRES_DB: notediary
         ports:
             - 5432:5432
-        restart: always
         volumes:
             - notediary-postgres:/var/lib/postgresql/data
-        
+    frontend:
+        image: patiwatsan/note-diary-front-end:v1.0
+        container_name: notediaryfrontend
+        depends_on:
+            - backend
+        ports:
+            - 8080:8080
+        links:
+            - backend
+    backend:
+        image: patiwatsan/note-diary-back-end:v1.0
+        container_name: notediarybackend
+        depends_on:
+            - db
+        environment:
+            - APP_PORT=8081
+            - APP_SECRET_API_KEY=secret-admin-key
+            - APP_JWT_KEY=secret-note-diary
+            - MAIL_HOST=stmp.gmail.com
+            - MAIL_PORT=587
+            - MAIL_USERNAME=patiwatkongram@gmail.com
+            - MAIL_PASSWORD=sltsbqgpcblrqixd
+            - DB_DRIVER=postgres
+            - DB_USERNAME=postgres
+            - DB_PASSWORD=p@ssword@pgsql
+            - DB_HOST=db
+            - DB_PORT=5432
+            - DB_DATABASE=notediary
+        ports:
+            - 8081:8081
+        links:
+            - db
 volumes:
-  notediary-postgres:
-    external: true
+    notediary-postgres:
+        external: true
+

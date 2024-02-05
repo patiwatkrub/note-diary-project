@@ -1,0 +1,11 @@
+.dockerignore
+Dockerfile
+
+node_modules
+
+.vscode
+.hintrc
+README.md
+tailwind.config.js
+
+src/assets/input.css
